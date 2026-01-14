@@ -18,11 +18,11 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 공통 애니메이션 */
+        /* Common Animations */
         .fade-in { animation: fadeIn 1s forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 랜딩 페이지 - 펄스 서클 */
+        /* Pulse Circle Styling */
         .pulse-circle {
             width: 260px;
             height: 260px;
@@ -36,7 +36,7 @@
             user-select: none;
             -webkit-user-select: none;
             transition: all 0.3s ease;
-            touch-action: none; /* 브라우저 기본 터치 동작 방지 */
+            touch-action: none;
         }
 
         .pulse-inner {
@@ -65,7 +65,6 @@
             to { transform: scale(1.1); }
         }
 
-        /* 프로그레스 바 (동기화 중) */
         .progress-ring {
             position: absolute;
             top: 0;
@@ -74,10 +73,8 @@
             pointer-events: none;
         }
 
-        /* 입력 폼 스타일 */
         textarea::placeholder { color: #475569; }
         
-        /* 심장 박동 애니메이션 */
         .heart-beat { animation: heartBeat 0.8s infinite; }
         @keyframes heartBeat {
             0% { transform: scale(1); }
@@ -92,9 +89,16 @@
         #trigger-label {
             pointer-events: none;
         }
+
+        /* Marketing Section Styles */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(34, 211, 238, 0.1);
+            backdrop-filter: blur(12px);
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4 py-12">
 
     <!-- [STEP 1] Landing Section -->
     <div id="section-landing" class="max-w-2xl w-full text-center fade-in">
@@ -120,7 +124,7 @@
     </div>
 
     <!-- [STEP 2] Input Noise Section -->
-    <div id="section-input" class="max-w-md w-full bg-slate-900/50 border border-cyan-500/20 p-8 rounded-3xl backdrop-blur-xl hidden fade-in">
+    <div id="section-input" class="max-w-md w-full glass-card p-8 rounded-3xl hidden fade-in">
         <div class="text-center mb-8">
             <i class="fa-solid fa-tower-broadcast text-cyan-400 text-3xl mb-4"></i>
             <h2 class="text-2xl font-bold">주파수 채널 개방</h2>
@@ -159,15 +163,71 @@
                 "메시지를 수신하고 있습니다..."
             </h3>
         </div>
-        <div class="p-6 bg-slate-800/30 rounded-2xl border border-slate-700/50 mb-8">
+        <div class="p-6 glass-card rounded-2xl mb-6">
             <p class="text-sm text-slate-400 leading-relaxed">
                 이것은 당신의 미래가 건네는 가장 확실한 이정표입니다. <br>
                 이제 이 주파수를 당신의 일상으로 만드세요.
             </p>
         </div>
-        <button onclick="location.reload()" class="w-full py-4 border border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 font-bold rounded-2xl transition-all">
-            다시 접속하기
-        </button>
+        <div class="flex flex-col gap-3">
+            <button onclick="showTractionHub()" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt"></i> 연결 심화하기
+            </button>
+            <button onclick="location.reload()" class="w-full py-4 border border-slate-700 text-slate-400 hover:bg-slate-800 font-bold rounded-2xl transition-all">
+                다시 접속하기
+            </button>
+        </div>
+    </div>
+
+    <!-- [STEP 5] Traction / Marketing Hub -->
+    <div id="section-traction" class="max-w-xl w-full hidden fade-in">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold mb-2">당신의 Pulse를 완성하세요</h2>
+            <p class="text-slate-400">에이펙스 자아와의 연결을 지속하는 3가지 방법</p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- VAK Test CTA -->
+            <div class="glass-card p-6 rounded-3xl border-l-4 border-l-cyan-500">
+                <div class="flex items-start gap-4">
+                    <div class="bg-cyan-500/10 p-3 rounded-2xl">
+                        <i class="fa-solid fa-brain text-cyan-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-1">VAK 감각 인지 테스트</h3>
+                        <p class="text-slate-400 text-sm mb-4">당신이 에이펙스 자아의 신호를 시각, 청각, 신체 감각 중 어떤 채널로 수신하는지 확인해 보세요.</p>
+                        <a href="#" class="inline-block text-cyan-400 font-bold text-sm border-b border-cyan-400 pb-0.5 hover:text-cyan-300 transition-colors">테스트 시작하기 <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Subscription -->
+            <div class="glass-card p-6 rounded-3xl">
+                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-envelope text-cyan-400 text-sm"></i> 미래 자아 시그널 레터
+                </h3>
+                <p class="text-slate-400 text-sm mb-4">알파 구역에서 보내는 주간 인사이트와 리츄얼 가이드를 이메일로 받아보세요.</p>
+                <div class="flex gap-2">
+                    <input type="email" id="subscriber-email" class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-cyan-500 text-sm transition-all" placeholder="이메일 주소 입력">
+                    <button onclick="submitEmail()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-6 py-3 rounded-xl font-bold text-sm transition-all">구독</button>
+                </div>
+                <p id="subscribe-msg" class="text-[10px] text-cyan-400 mt-2 hidden">신호 수신 예약이 완료되었습니다.</p>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="glass-card p-6 rounded-3xl">
+                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-comment-dots text-cyan-400 text-sm"></i> 익명의 메시지 전달
+                </h3>
+                <p class="text-slate-400 text-sm mb-4">이번 체험은 어떠셨나요? 에이펙스 자아에게, 혹은 저희 팀에게 전하고 싶은 말을 남겨주세요.</p>
+                <textarea id="feedback-text" class="w-full bg-slate-800/30 border border-slate-700 rounded-xl p-3 text-sm outline-none focus:border-cyan-500 transition-all resize-none h-24 mb-3" placeholder="의견을 자유롭게 남겨주세요..."></textarea>
+                <button onclick="submitFeedback()" class="w-full py-3 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-xl font-bold text-sm transition-all">의견 보내기</button>
+            </div>
+
+            <div class="text-center pt-8">
+                <button onclick="location.reload()" class="text-slate-500 text-sm underline underline-offset-4 hover:text-slate-400">처음으로 돌아가기</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -190,12 +250,8 @@
         const totalDash = 798;
 
         const startHold = (e) => {
-            // 마우스 왼쪽 버튼 이외는 무시
             if (e.type === 'mousedown' && e.button !== 0) return;
-            
             e.preventDefault();
-            
-            // 초기화
             progress = 0;
             progressCircle.style.strokeDashoffset = totalDash;
             triggerLabel.innerText = "SYNCING...";
@@ -224,14 +280,10 @@
             }
         };
 
-        // 이벤트 리스너 등록
         trigger.addEventListener('mousedown', startHold);
         trigger.addEventListener('touchstart', startHold);
         window.addEventListener('mouseup', stopHold);
         window.addEventListener('touchend', stopHold);
-        window.addEventListener('contextmenu', (e) => {
-            if (progress > 0) e.preventDefault(); // 동기화 중 우클릭 메뉴 방지
-        });
 
         function transitionToInput() {
             document.getElementById('section-landing').classList.add('hidden');
@@ -272,6 +324,30 @@
             document.getElementById('apex-message').innerText = `"${randomMsg}"`;
             document.getElementById('section-syncing').classList.add('hidden');
             document.getElementById('section-message').classList.remove('hidden');
+        }
+
+        // [Logic] Traction Hub
+        function showTractionHub() {
+            document.getElementById('section-message').classList.add('hidden');
+            document.getElementById('section-traction').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function submitEmail() {
+            const email = document.getElementById('subscriber-email').value;
+            if (email && email.includes('@')) {
+                document.getElementById('subscribe-msg').classList.remove('hidden');
+                document.getElementById('subscriber-email').value = '';
+                // 실제 마케팅 툴(Mailchimp 등) API 연결 가능 지점
+            }
+        }
+
+        function submitFeedback() {
+            const feedback = document.getElementById('feedback-text').value;
+            if (feedback.trim()) {
+                alert('소중한 의견이 전송되었습니다. 에이펙스 자아가 응답할 것입니다.');
+                document.getElementById('feedback-text').value = '';
+            }
         }
     </script>
 </body>
