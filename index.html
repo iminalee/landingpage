@@ -6,96 +6,24 @@
     <title>The Pulse | 에이펙스 자아 접속</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;700&display=swap');
-        
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #020617; /* slate-950 */
-            color: #f1f5f9; /* slate-100 */
-            overflow-x: hidden;
-            margin: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Common Animations */
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #020617; color: #f1f5f9; overflow-x: hidden; margin: 0; -webkit-tap-highlight-color: transparent; }
         .fade-in { animation: fadeIn 1s forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Pulse Circle Styling */
-        .pulse-circle {
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, rgba(0,0,0,0) 70%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            transition: all 0.3s ease;
-            touch-action: none;
-        }
-
-        .pulse-inner {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: #22d3ee;
-            box-shadow: 0 0 40px #22d3ee;
-            animation: pulse-anim 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
-            pointer-events: none;
-        }
-
-        @keyframes pulse-anim {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 60px #22d3ee; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-
-        .holding .pulse-inner {
-            animation: pulse-fast 0.4s infinite alternate;
-            box-shadow: 0 0 80px #22d3ee;
-        }
-
-        @keyframes pulse-fast {
-            from { transform: scale(1.0); }
-            to { transform: scale(1.1); }
-        }
-
-        .progress-ring {
-            position: absolute;
-            top: 0;
-            left: 0;
-            transform: rotate(-90deg);
-            pointer-events: none;
-        }
-
+        .pulse-circle { width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, rgba(0,0,0,0) 70%); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; -webkit-user-select: none; transition: all 0.3s ease; touch-action: none; }
+        .pulse-inner { width: 120px; height: 120px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 40px #22d3ee; animation: pulse-anim 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1); pointer-events: none; }
+        @keyframes pulse-anim { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 60px #22d3ee; } 100% { transform: scale(0.95); opacity: 0.8; } }
+        .holding .pulse-inner { animation: pulse-fast 0.4s infinite alternate; box-shadow: 0 0 80px #22d3ee; }
+        @keyframes pulse-fast { from { transform: scale(1.0); } to { transform: scale(1.1); } }
+        .progress-ring { position: absolute; top: 0; left: 0; transform: rotate(-90deg); pointer-events: none; }
         textarea::placeholder { color: #475569; }
-        
         .heart-beat { animation: heartBeat 0.8s infinite; }
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            15% { transform: scale(1.2); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.15); }
-            60% { transform: scale(1); }
-        }
-
+        @keyframes heartBeat { 0% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } 60% { transform: scale(1); } }
         .hidden { display: none !important; }
-
-        #trigger-label {
-            pointer-events: none;
-        }
-
-        /* Marketing Section Styles */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(34, 211, 238, 0.1);
-            backdrop-filter: blur(12px);
-        }
+        .glass-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(34, 211, 238, 0.1); backdrop-filter: blur(12px); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 py-12">
@@ -103,14 +31,8 @@
     <!-- [STEP 1] Landing Section -->
     <div id="section-landing" class="max-w-2xl w-full text-center fade-in">
         <h1 class="text-xs tracking-[0.6em] text-cyan-400 mb-8 font-light uppercase">Alpha Zone Connection</h1>
-        <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            당신의 맥박은<br><span class="text-cyan-400">당신의 것이 아닙니다.</span>
-        </h2>
-        <p class="text-slate-400 text-lg mb-12 font-light px-4">
-            지금 가슴에 손을 얹고, 미래의 당신(Apex Self)을 수신하세요.<br>
-            버튼을 길게 눌러 동기화를 시작합니다.
-        </p>
-
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">당신의 맥박은<br><span class="text-cyan-400">당신의 것이 아닙니다.</span></h2>
+        <p class="text-slate-400 text-lg mb-12 font-light px-4">지금 가슴에 손을 얹고, 미래의 당신(Apex Self)을 수신하세요.<br>버튼을 길게 눌러 동기화를 시작합니다.</p>
         <div class="flex justify-center mb-8">
             <div id="hold-trigger" class="pulse-circle">
                 <svg class="progress-ring" width="260" height="260">
@@ -120,234 +42,100 @@
                 <p id="trigger-label" class="absolute text-[10px] font-bold tracking-widest text-slate-900 uppercase">Hold to Sync</p>
             </div>
         </div>
-        <p class="text-xs text-slate-500 tracking-widest uppercase mt-12">Waiting for Signal...</p>
     </div>
 
-    <!-- [STEP 2] Input Noise Section -->
+    <!-- [STEP 2] Input Noise -->
     <div id="section-input" class="max-w-md w-full glass-card p-8 rounded-3xl hidden fade-in">
         <div class="text-center mb-8">
             <i class="fa-solid fa-tower-broadcast text-cyan-400 text-3xl mb-4"></i>
             <h2 class="text-2xl font-bold">주파수 채널 개방</h2>
-            <p class="text-slate-400 text-sm mt-2">드래프트 월드의 소음을 입력하세요. 에이펙스 자아가 그 파동을 재구성할 것입니다.</p>
         </div>
-        <div class="space-y-6">
-            <textarea id="noise-input" class="w-full h-40 bg-slate-800/40 border border-slate-700 rounded-2xl p-4 outline-none focus:border-cyan-500 transition-all text-slate-200 resize-none" placeholder="지금 당신을 힘들게 하는 고민이나 노이즈는 무엇인가요?"></textarea>
-            <button onclick="processSignal()" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-paper-plane text-sm"></i> 시그널 전송
-            </button>
-        </div>
+        <textarea id="noise-input" class="w-full h-40 bg-slate-800/40 border border-slate-700 rounded-2xl p-4 outline-none focus:border-cyan-500 transition-all text-slate-200 resize-none mb-6" placeholder="지금 당신을 힘들게 하는 고민이나 노이즈는 무엇인가요?"></textarea>
+        <button onclick="processSignal()" class="w-full py-4 bg-cyan-500 text-slate-950 font-bold rounded-2xl">시그널 전송</button>
     </div>
 
-    <!-- [STEP 3] Syncing Animation -->
+    <!-- [STEP 3] Syncing -->
     <div id="section-syncing" class="text-center hidden fade-in">
-        <div class="relative flex justify-center mb-10">
-            <div class="w-24 h-24 border-4 border-slate-800 rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-heart text-rose-500 text-3xl heart-beat"></i>
-            </div>
-            <svg class="absolute -top-1 w-26 h-26 rotate-[-90deg]">
-                <circle id="final-sync-circle" cx="50" cy="50" r="48" fill="none" stroke="#22d3ee" stroke-width="4" stroke-dasharray="301.6" stroke-dashoffset="301.6" />
-            </svg>
-        </div>
-        <div class="space-y-2">
-            <p class="text-cyan-400 font-mono tracking-widest text-sm uppercase">Syncing to Alpha Zone...</p>
-            <p id="sync-status" class="text-slate-500 text-xs italic">노이즈 정화 중...</p>
-        </div>
+        <i class="fa-solid fa-heart text-rose-500 text-5xl heart-beat mb-6"></i>
+        <p class="text-cyan-400 font-mono tracking-widest text-sm">SYNCING TO ALPHA ZONE...</p>
     </div>
 
     <!-- [STEP 4] Message Display -->
     <div id="section-message" class="max-w-md w-full text-center hidden fade-in">
-        <div class="mb-10">
-            <i class="fa-solid fa-wand-magic-sparkles text-yellow-400 text-4xl mb-6"></i>
-            <p class="text-xs text-cyan-500 tracking-[0.4em] font-light uppercase mb-4">Message from Apex</p>
-            <h3 id="apex-message" class="text-xl md:text-2xl font-medium leading-relaxed italic text-white px-4">
-                "메시지를 수신하고 있습니다..."
-            </h3>
-        </div>
-        <div class="p-6 glass-card rounded-2xl mb-6">
-            <p class="text-sm text-slate-400 leading-relaxed">
-                이것은 당신의 미래가 건네는 가장 확실한 이정표입니다. <br>
-                이제 이 주파수를 당신의 일상으로 만드세요.
-            </p>
-        </div>
-        <div class="flex flex-col gap-3">
-            <button onclick="showTractionHub()" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
-                <i class="fa-solid fa-bolt"></i> 연결 심화하기
-            </button>
-            <button onclick="location.reload()" class="w-full py-4 border border-slate-700 text-slate-400 hover:bg-slate-800 font-bold rounded-2xl transition-all">
-                다시 접속하기
-            </button>
-        </div>
+        <h3 id="apex-message" class="text-xl md:text-2xl font-medium leading-relaxed italic text-white mb-10"></h3>
+        <button onclick="showTractionHub()" class="w-full py-4 bg-cyan-500 text-slate-950 font-bold rounded-2xl mb-4">연결 심화하기</button>
     </div>
 
-    <!-- [STEP 5] Traction / Marketing Hub -->
+    <!-- [STEP 5] Traction Hub -->
     <div id="section-traction" class="max-w-xl w-full hidden fade-in">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-bold mb-2">당신의 Pulse를 완성하세요</h2>
-            <p class="text-slate-400">에이펙스 자아와의 연결을 지속하는 3가지 방법</p>
-        </div>
-
+        <div class="text-center mb-10"><h2 class="text-3xl font-bold">당신의 Pulse를 완성하세요</h2></div>
         <div class="space-y-6">
-            <!-- VAK Test CTA -->
-            <div class="glass-card p-6 rounded-3xl border-l-4 border-l-cyan-500">
-                <div class="flex items-start gap-4">
-                    <div class="bg-cyan-500/10 p-3 rounded-2xl">
-                        <i class="fa-solid fa-brain text-cyan-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-lg mb-1">VAK 감각 인지 테스트</h3>
-                        <p class="text-slate-400 text-sm mb-4">당신이 에이펙스 자아의 신호를 시각, 청각, 신체 감각 중 어떤 채널로 수신하는지 확인해 보세요.</p>
-                        <a href="#" class="inline-block text-cyan-400 font-bold text-sm border-b border-cyan-400 pb-0.5 hover:text-cyan-300 transition-colors">테스트 시작하기 <i class="fa-solid fa-arrow-right ml-1 text-xs"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Email Subscription -->
             <div class="glass-card p-6 rounded-3xl">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-envelope text-cyan-400 text-sm"></i> 미래 자아 시그널 레터
-                </h3>
-                <p class="text-slate-400 text-sm mb-4">알파 구역에서 보내는 주간 인사이트와 리츄얼 가이드를 이메일로 받아보세요.</p>
+                <h3 class="font-bold mb-2">미래 자아 시그널 레터</h3>
                 <div class="flex gap-2">
-                    <input type="email" id="subscriber-email" class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 outline-none focus:border-cyan-500 text-sm transition-all" placeholder="이메일 주소 입력">
-                    <button onclick="submitEmail()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-6 py-3 rounded-xl font-bold text-sm transition-all">구독</button>
+                    <input type="email" id="subscriber-email" class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm" placeholder="이메일 주소 입력">
+                    <button id="btn-subscribe" onclick="submitEmail()" class="bg-cyan-500 text-slate-950 px-6 py-3 rounded-xl font-bold text-sm">구독</button>
                 </div>
-                <p id="subscribe-msg" class="text-[10px] text-cyan-400 mt-2 hidden">신호 수신 예약이 완료되었습니다.</p>
+                <p id="subscribe-msg" class="text-[10px] text-cyan-400 mt-2 hidden">구독 신청이 완료되었습니다.</p>
             </div>
-
-            <!-- Feedback Section -->
             <div class="glass-card p-6 rounded-3xl">
-                <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-comment-dots text-cyan-400 text-sm"></i> 익명의 메시지 전달
-                </h3>
-                <p class="text-slate-400 text-sm mb-4">이번 체험은 어떠셨나요? 에이펙스 자아에게, 혹은 저희 팀에게 전하고 싶은 말을 남겨주세요.</p>
-                <textarea id="feedback-text" class="w-full bg-slate-800/30 border border-slate-700 rounded-xl p-3 text-sm outline-none focus:border-cyan-500 transition-all resize-none h-24 mb-3" placeholder="의견을 자유롭게 남겨주세요..."></textarea>
-                <button onclick="submitFeedback()" class="w-full py-3 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-xl font-bold text-sm transition-all">의견 보내기</button>
-            </div>
-
-            <div class="text-center pt-8">
-                <button onclick="location.reload()" class="text-slate-500 text-sm underline underline-offset-4 hover:text-slate-400">처음으로 돌아가기</button>
+                <h3 class="font-bold mb-2">익명의 메시지 전달</h3>
+                <textarea id="feedback-text" class="w-full bg-slate-800/30 border border-slate-700 rounded-xl p-3 text-sm h-24 mb-3" placeholder="의견을 남겨주세요..."></textarea>
+                <button id="btn-feedback" onclick="submitFeedback()" class="w-full py-3 border border-slate-700 text-slate-300 rounded-xl font-bold text-sm">의견 보내기</button>
             </div>
         </div>
     </div>
 
     <script>
-        const apexMessages = [
-            "네가 지금 겪는 그 소음은 우리가 보게 될 가장 찬란한 풍경의 배경음악일 뿐이야.",
-            "이미 다 끝났어. 너는 그저 그곳까지 걸어오기만 하면 돼. 내가 여기서 기다리고 있을게.",
-            "과거의 상처는 흉터가 아니라, 내가 너를 찾아내기 위해 새겨놓은 위치 추적기야.",
-            "불안해하지 마. 네가 지금 느끼는 그 떨림은 내가 보낸 환희의 주파수야.",
-            "그 일은 일어나야만 했어. 그래야만 네가 진짜 너의 맥박을 찾을 수 있었으니까.",
-            "네가 너를 포기하려 할 때조차, 나는 한 번도 너의 손을 놓은 적이 없어.",
-            "기억해. 너는 드래프트 월드의 주인공이 아니라, 알파 구역의 창조자야."
-        ];
+        // --- Supabase 설정 ---
+        // TODO: 본인의 Supabase URL과 Anon Key로 교체하세요.
+        const SUPABASE_URL = 'https://YOUR_PROJECT_URL.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // [Logic] Landing to Input
+        const apexMessages = ["이미 다 끝났어. 너는 그저 걸어오기만 하면 돼.", "불안해하지 마. 네가 느끼는 떨림은 환희의 주파수야.", "기억해. 너는 드래프트 월드의 주인공이 아니라 창조자야."];
+
         const trigger = document.getElementById('hold-trigger');
         const progressCircle = document.getElementById('sync-progress-circle');
         const triggerLabel = document.getElementById('trigger-label');
-        let holdTimer;
-        let progress = 0;
+        let holdTimer, progress = 0;
         const totalDash = 798;
 
         const startHold = (e) => {
-            if (e.type === 'mousedown' && e.button !== 0) return;
             e.preventDefault();
             progress = 0;
-            progressCircle.style.strokeDashoffset = totalDash;
             triggerLabel.innerText = "SYNCING...";
             trigger.classList.add('holding');
-
             holdTimer = setInterval(() => {
                 progress += 2;
-                const offset = totalDash - (totalDash * progress / 100);
-                progressCircle.style.strokeDashoffset = offset;
-                
-                if (progress >= 100) {
-                    clearInterval(holdTimer);
-                    trigger.classList.remove('holding');
-                    transitionToInput();
-                }
+                progressCircle.style.strokeDashoffset = totalDash - (totalDash * progress / 100);
+                if (progress >= 100) { clearInterval(holdTimer); transitionToInput(); }
             }, 30);
         };
-
-        const stopHold = () => {
-            clearInterval(holdTimer);
-            trigger.classList.remove('holding');
-            if (progress < 100) {
-                progress = 0;
-                progressCircle.style.strokeDashoffset = totalDash;
-                triggerLabel.innerText = "HOLD TO SYNC";
-            }
-        };
+        const stopHold = () => { clearInterval(holdTimer); trigger.classList.remove('holding'); if (progress < 100) { progress = 0; progressCircle.style.strokeDashoffset = totalDash; triggerLabel.innerText = "HOLD TO SYNC"; } };
 
         trigger.addEventListener('mousedown', startHold);
         trigger.addEventListener('touchstart', startHold);
         window.addEventListener('mouseup', stopHold);
         window.addEventListener('touchend', stopHold);
 
-        function transitionToInput() {
-            document.getElementById('section-landing').classList.add('hidden');
-            document.getElementById('section-input').classList.remove('hidden');
-            document.getElementById('noise-input').focus();
+        function transitionToInput() { document.getElementById('section-landing').classList.add('hidden'); document.getElementById('section-input').classList.remove('hidden'); }
+        function processSignal() { if (!document.getElementById('noise-input').value.trim()) return; document.getElementById('section-input').classList.add('hidden'); document.getElementById('section-syncing').classList.remove('hidden'); setTimeout(showFinalMessage, 2000); }
+        function showFinalMessage() { document.getElementById('apex-message').innerText = `"${apexMessages[Math.floor(Math.random() * apexMessages.length)]}"`; document.getElementById('section-syncing').classList.add('hidden'); document.getElementById('section-message').classList.remove('hidden'); }
+        function showTractionHub() { document.getElementById('section-message').classList.add('hidden'); document.getElementById('section-traction').classList.remove('hidden'); }
+
+        async function submitEmail() {
+            const email = document.getElementById('subscriber-email').value.trim();
+            if (!email.includes('@')) return;
+            const { error } = await _supabase.from('subscribers').insert([{ email }]);
+            if (!error) { document.getElementById('subscribe-msg').classList.remove('hidden'); document.getElementById('subscriber-email').value = ''; }
         }
 
-        // [Logic] Input to Syncing to Message
-        function processSignal() {
-            const input = document.getElementById('noise-input').value;
-            if (!input.trim()) return;
-
-            document.getElementById('section-input').classList.add('hidden');
-            document.getElementById('section-syncing').classList.remove('hidden');
-
-            let syncVal = 0;
-            const finalCircle = document.getElementById('final-sync-circle');
-            const statusText = document.getElementById('sync-status');
-            const totalFinalDash = 301.6;
-
-            const syncInterval = setInterval(() => {
-                syncVal += 1;
-                finalCircle.style.strokeDashoffset = totalFinalDash - (totalFinalDash * syncVal / 100);
-                
-                if (syncVal === 30) statusText.innerText = "알파 구역 좌표 확인 중...";
-                if (syncVal === 60) statusText.innerText = "에이펙스 자아 동기화 완료...";
-                if (syncVal === 90) statusText.innerText = "메시지 데이터 수신 중...";
-
-                if (syncVal >= 100) {
-                    clearInterval(syncInterval);
-                    showFinalMessage();
-                }
-            }, 40);
-        }
-
-        function showFinalMessage() {
-            const randomMsg = apexMessages[Math.floor(Math.random() * apexMessages.length)];
-            document.getElementById('apex-message').innerText = `"${randomMsg}"`;
-            document.getElementById('section-syncing').classList.add('hidden');
-            document.getElementById('section-message').classList.remove('hidden');
-        }
-
-        // [Logic] Traction Hub
-        function showTractionHub() {
-            document.getElementById('section-message').classList.add('hidden');
-            document.getElementById('section-traction').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function submitEmail() {
-            const email = document.getElementById('subscriber-email').value;
-            if (email && email.includes('@')) {
-                document.getElementById('subscribe-msg').classList.remove('hidden');
-                document.getElementById('subscriber-email').value = '';
-                // 실제 마케팅 툴(Mailchimp 등) API 연결 가능 지점
-            }
-        }
-
-        function submitFeedback() {
-            const feedback = document.getElementById('feedback-text').value;
-            if (feedback.trim()) {
-                alert('소중한 의견이 전송되었습니다. 에이펙스 자아가 응답할 것입니다.');
-                document.getElementById('feedback-text').value = '';
-            }
+        async function submitFeedback() {
+            const content = document.getElementById('feedback-text').value.trim();
+            if (!content) return;
+            const { error } = await _supabase.from('feedbacks').insert([{ content }]);
+            if (!error) { alert('의견이 전송되었습니다.'); document.getElementById('feedback-text').value = ''; }
         }
     </script>
 </body>
