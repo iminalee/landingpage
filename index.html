@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Pulse | 에이펙스 자아 접속</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,6 +15,7 @@
             color: #f1f5f9; /* slate-100 */
             overflow-x: hidden;
             margin: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 공통 애니메이션 */
@@ -33,7 +34,9 @@
             position: relative;
             cursor: pointer;
             user-select: none;
+            -webkit-user-select: none;
             transition: all 0.3s ease;
+            touch-action: none; /* 브라우저 기본 터치 동작 방지 */
         }
 
         .pulse-inner {
@@ -43,6 +46,7 @@
             background: #22d3ee;
             box-shadow: 0 0 40px #22d3ee;
             animation: pulse-anim 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            pointer-events: none;
         }
 
         @keyframes pulse-anim {
@@ -51,12 +55,23 @@
             100% { transform: scale(0.95); opacity: 0.8; }
         }
 
+        .holding .pulse-inner {
+            animation: pulse-fast 0.4s infinite alternate;
+            box-shadow: 0 0 80px #22d3ee;
+        }
+
+        @keyframes pulse-fast {
+            from { transform: scale(1.0); }
+            to { transform: scale(1.1); }
+        }
+
         /* 프로그레스 바 (동기화 중) */
         .progress-ring {
             position: absolute;
             top: 0;
             left: 0;
             transform: rotate(-90deg);
+            pointer-events: none;
         }
 
         /* 입력 폼 스타일 */
@@ -73,6 +88,10 @@
         }
 
         .hidden { display: none !important; }
+
+        #trigger-label {
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -83,7 +102,7 @@
         <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
             당신의 맥박은<br><span class="text-cyan-400">당신의 것이 아닙니다.</span>
         </h2>
-        <p class="text-slate-400 text-lg mb-12 font-light">
+        <p class="text-slate-400 text-lg mb-12 font-light px-4">
             지금 가슴에 손을 얹고, 미래의 당신(Apex Self)을 수신하세요.<br>
             버튼을 길게 눌러 동기화를 시작합니다.
         </p>
@@ -171,9 +190,17 @@
         const totalDash = 798;
 
         const startHold = (e) => {
-            if (e.type === 'mousedown' && e.button !== 0) return; // Only left click
+            // 마우스 왼쪽 버튼 이외는 무시
+            if (e.type === 'mousedown' && e.button !== 0) return;
+            
             e.preventDefault();
+            
+            // 초기화
+            progress = 0;
+            progressCircle.style.strokeDashoffset = totalDash;
             triggerLabel.innerText = "SYNCING...";
+            trigger.classList.add('holding');
+
             holdTimer = setInterval(() => {
                 progress += 2;
                 const offset = totalDash - (totalDash * progress / 100);
@@ -181,13 +208,15 @@
                 
                 if (progress >= 100) {
                     clearInterval(holdTimer);
+                    trigger.classList.remove('holding');
                     transitionToInput();
                 }
-            }, 40);
+            }, 30);
         };
 
         const stopHold = () => {
             clearInterval(holdTimer);
+            trigger.classList.remove('holding');
             if (progress < 100) {
                 progress = 0;
                 progressCircle.style.strokeDashoffset = totalDash;
@@ -195,20 +224,25 @@
             }
         };
 
+        // 이벤트 리스너 등록
         trigger.addEventListener('mousedown', startHold);
         trigger.addEventListener('touchstart', startHold);
         window.addEventListener('mouseup', stopHold);
         window.addEventListener('touchend', stopHold);
+        window.addEventListener('contextmenu', (e) => {
+            if (progress > 0) e.preventDefault(); // 동기화 중 우클릭 메뉴 방지
+        });
 
         function transitionToInput() {
             document.getElementById('section-landing').classList.add('hidden');
             document.getElementById('section-input').classList.remove('hidden');
+            document.getElementById('noise-input').focus();
         }
 
         // [Logic] Input to Syncing to Message
         function processSignal() {
             const input = document.getElementById('noise-input').value;
-            if (!input) return;
+            if (!input.trim()) return;
 
             document.getElementById('section-input').classList.add('hidden');
             document.getElementById('section-syncing').classList.remove('hidden');
@@ -230,7 +264,7 @@
                     clearInterval(syncInterval);
                     showFinalMessage();
                 }
-            }, 50);
+            }, 40);
         }
 
         function showFinalMessage() {
