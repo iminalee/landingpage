@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pulse | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #020617; color: #f1f5f9; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(34, 211, 238, 0.1); }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <!-- [Login Gate] -->
+    <div id="login-gate" class="max-w-md mx-auto mt-20 glass p-8 rounded-3xl text-center">
+        <i class="fa-solid fa-lock text-cyan-400 text-4xl mb-6"></i>
+        <h1 class="text-2xl font-bold mb-6">관리자 접속</h1>
+        <input type="password" id="admin-pass" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 mb-4 outline-none focus:border-cyan-500" placeholder="관리자 암호를 입력하세요">
+        <button onclick="checkAuth()" class="w-full bg-cyan-500 text-slate-950 font-bold py-3 rounded-xl">접속하기</button>
+    </div>
+
+    <!-- [Main Dashboard] -->
+    <div id="dashboard" class="max-w-6xl mx-auto hidden">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-bold">The Pulse Dashboard</h1>
+            <button onclick="loadData()" class="bg-slate-800 px-6 py-2 rounded-xl text-sm"><i class="fa-solid fa-rotate-right mr-2"></i>새로고침</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Subscribers List -->
+            <div class="glass p-6 rounded-3xl">
+                <h2 class="text-xl font-bold mb-6 flex justify-between">뉴스레터 구독자 <span id="sub-count" class="text-cyan-400">0</span></h2>
+                <div class="space-y-3" id="subscribers-list"></div>
+            </div>
+
+            <!-- Feedbacks List -->
+            <div class="glass p-6 rounded-3xl">
+                <h2 class="text-xl font-bold mb-6 flex justify-between">사용자 피드백 <span id="feed-count" class="text-purple-400">0</span></h2>
+                <div class="space-y-4" id="feedbacks-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Supabase 설정 ---
+        const SUPABASE_URL = 'https://YOUR_PROJECT_URL.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        window.checkAuth = () => {
+            if (document.getElementById('admin-pass').value === "1234") {
+                document.getElementById('login-gate').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                loadData();
+            } else { alert("암호가 틀렸습니다."); }
+        };
+
+        async function loadData() {
+            // Fetch Subscribers
+            const { data: subs } = await _supabase.from('subscribers').select('*').order('created_at', { ascending: false });
+            const subList = document.getElementById('subscribers-list');
+            subList.innerHTML = "";
+            document.getElementById('sub-count').innerText = subs ? subs.length : 0;
+            subs?.forEach(s => {
+                subList.innerHTML += `<div class="bg-slate-800/40 p-3 rounded-xl flex justify-between text-sm"><span>${s.email}</span><span class="text-slate-500">${new Date(s.created_at).toLocaleDateString()}</span></div>`;
+            });
+
+            // Fetch Feedbacks
+            const { data: feeds } = await _supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
+            const feedList = document.getElementById('feedbacks-list');
+            feedList.innerHTML = "";
+            document.getElementById('feed-count').innerText = feeds ? feeds.length : 0;
+            feeds?.forEach(f => {
+                feedList.innerHTML += `<div class="bg-slate-800/40 p-4 rounded-xl text-sm"><p class="mb-2">${f.content}</p><span class="text-[10px] text-slate-500">${new Date(f.created_at).toLocaleString()}</span></div>`;
+            });
+        }
+    </script>
+</body>
+</html>
