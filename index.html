@@ -4,21 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apex BPS | 미래 자아 접속 시스템</title>
+    
+    <!-- Tailwind CSS CDN & Config: 별도의 파일 업로드 없이 이 설정만으로 충분합니다 -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amber: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f', 950: '#451a03',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
         
         :root {
             --bg-main: #050b1a; 
-            --bg-card: rgba(15, 23, 42, 0.9); 
+            --bg-card: rgba(15, 23, 42, 0.95); 
             --accent-primary: #f59e0b; 
             --accent-secondary: #d97706; 
             --text-main: #ffffff; 
-            --text-sub: #e2e8f0; 
-            --text-muted: #cbd5e1; 
             --nav-height: 80px; 
         }
 
@@ -35,8 +52,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         .hero-gradient {
-            background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.1) 0%, transparent 40%),
+            background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.15) 0%, transparent 40%),
                         var(--bg-main);
         }
 
@@ -44,39 +61,41 @@
             height: var(--nav-height);
             background: rgba(5, 11, 26, 0.85);
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: fixed; top: 0; left: 0; w-full; z-50;
-            display: flex; align-items: center; width: 100%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 100;
+            display: flex; align-items: center;
         }
+
+        section { scroll-margin-top: var(--nav-height); }
 
         .glass-card {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(30px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7);
         }
 
-        /* 인터랙티브 요소 */
         .pulse-circle {
             width: 220px; height: 220px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
             display: flex; align-items: center; justify-content: center;
             position: relative; cursor: pointer; touch-action: none;
         }
         .pulse-inner {
             width: 100px; height: 100px; border-radius: 50%;
             background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.6);
             animation: pulse-idle 2.5s infinite ease-in-out;
         }
-        @keyframes pulse-idle { 0%, 100% { transform: scale(0.92); opacity: 0.7; } 50% { transform: scale(1.08); opacity: 1; } }
+        @keyframes pulse-idle { 0%, 100% { transform: scale(0.92); opacity: 0.8; } 50% { transform: scale(1.08); opacity: 1; } }
         .holding .pulse-inner { animation: pulse-active 0.4s infinite alternate; box-shadow: 0 0 70px #f59e0b; }
         @keyframes pulse-active { from { transform: scale(1); } to { transform: scale(1.15); } }
 
         .progress-ring { position: absolute; top: 0; left: 0; transform: rotate(-90deg); pointer-events: none; }
         
         .scenario-btn {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(30, 41, 59, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: left; padding: 1.5rem; border-radius: 1.5rem;
@@ -88,9 +107,9 @@
             transform: translateY(-4px);
         }
 
-        /* 결과 피라미드 레이아웃 (Amber) */
-        .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 14px; }
-        .pyramid-row { display: grid; grid-template-cols: 150px 1fr; align-items: center; gap: 24px; width: 100%; }
+        /* 피라미드 리포트 레이아웃 */
+        .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 16px; }
+        .pyramid-row { display: grid; grid-template-cols: 150px 1fr; align-items: center; gap: 28px; width: 100%; }
         
         .pyramid-visual-block {
             height: 60px;
@@ -98,20 +117,21 @@
             background: var(--block-bg);
             width: var(--block-width);
             justify-self: end;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             display: flex; align-items: center; justify-content: center;
-            color: #020617; font-weight: 900; font-size: 12px; letter-spacing: 1.5px;
+            font-weight: 900; font-size: 13px; letter-spacing: 1.5px;
             print-color-adjust: exact;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.2);
         }
 
         .pyramid-text-content {
             display: flex; flex-direction: column; justify-content: center;
-            border-left: 3px solid rgba(245, 158, 11, 0.3);
+            border-left: 4px solid rgba(245, 158, 11, 0.4);
             padding-left: 24px;
         }
-        .pyramid-text-content .level-title { font-size: 17px; font-weight: 900; color: #fbbf24; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .pyramid-text-content .selected-sentence { font-size: 15px; font-weight: 400; color: #f8fafc; font-style: italic; line-height: 1.6; }
+        .pyramid-text-content .level-title { font-size: 18px; font-weight: 900; color: #fbbf24; margin-bottom: 6px; }
+        .pyramid-text-content .selected-sentence { font-size: 15px; font-weight: 500; color: #f8fafc; font-style: italic; line-height: 1.6; }
 
         .bar-container { height: 12px; background: #1e293b; border-radius: 10px; overflow: hidden; }
         .bar-fill { height: 100%; background: linear-gradient(to right, #f59e0b, #d97706); width: 0%; transition: width 1.5s ease-out; }
@@ -120,8 +140,7 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
 
-        /* 겹침 방지 섹션 패딩 */
-        .app-section { padding-top: calc(var(--nav-height) + 40px); padding-bottom: 60px; }
+        .app-section-container { padding-top: 40px; padding-bottom: 60px; }
 
         @media print {
             .no-print { display: none !important; }
@@ -153,7 +172,6 @@
         </div>
     </nav>
 
-    <!-- [MAIN CONTENT] -->
     <main class="relative z-10">
         
         <!-- [LANDING SECTION: HERO] -->
@@ -169,7 +187,7 @@
                     <span class="text-white font-black italic underline underline-offset-8 decoration-amber-400">‘수신 코드’</span>를 발견할 때만 잠재의식은 움직이기 시작합니다.
                 </p>
                 <div class="flex flex-col md:flex-row gap-6 justify-center">
-                    <button onclick="document.getElementById('section-experience').scrollIntoView({behavior:'smooth'})" class="px-12 py-6 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black rounded-2xl hover:scale-105 transition-all shadow-[0_20px_40px_-10px_rgba(245,158,11,0.5)]">
+                    <button onclick="showSection('app-input')" class="px-12 py-6 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black rounded-2xl hover:scale-105 transition-all shadow-[0_20px_40px_-10px_rgba(245,158,11,0.5)]">
                         주파수 동기화 시작 <i class="fa-solid fa-arrow-right ml-3"></i>
                     </button>
                     <button onclick="document.getElementById('section-features').scrollIntoView({behavior:'smooth'})" class="px-12 py-6 border-2 border-slate-500 rounded-2xl font-black text-white hover:bg-slate-800 transition-all">
@@ -215,8 +233,7 @@
         <!-- [EXPERIENCE AREA] -->
         <section id="section-experience" class="py-20 px-6 min-h-screen flex items-center justify-center bg-slate-950/30">
             
-            <!-- [APP: NOISE INPUT] -->
-            <div id="app-input" class="max-w-lg w-full glass-card p-10 md:p-14 rounded-[3rem] fade-in no-print app-section">
+            <div id="app-input" class="max-w-lg w-full glass-card p-10 md:p-14 rounded-[3rem] fade-in no-print app-section-container hidden">
                 <div class="text-center mb-12">
                     <div class="inline-block p-5 rounded-3xl bg-amber-400/10 mb-8">
                         <i class="fa-solid fa-tower-broadcast text-amber-400 text-4xl"></i>
@@ -228,16 +245,14 @@
                 <button onclick="processNoise()" class="w-full py-6 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black rounded-2xl transition-all shadow-xl text-lg hover:brightness-110">신호 전송 및 정화</button>
             </div>
 
-            <!-- [APP: SYNCING] -->
-            <div id="app-syncing" class="text-center hidden no-print app-section">
+            <div id="app-syncing" class="text-center hidden no-print app-section-container">
                 <div class="relative inline-block mb-12">
                     <i class="fa-solid fa-circle-nodes text-amber-400 text-8xl animate-pulse"></i>
                 </div>
                 <p class="text-amber-300 font-mono tracking-[0.6em] text-lg uppercase animate-pulse" id="sync-text">Syncing to Alpha Zone...</p>
             </div>
 
-            <!-- [APP: MESSAGE] -->
-            <div id="app-message" class="max-w-lg w-full text-center hidden fade-in no-print app-section">
+            <div id="app-message" class="max-w-lg w-full text-center hidden fade-in no-print app-section-container">
                 <div class="mb-14">
                     <i class="fa-solid fa-sparkles text-yellow-400 text-6xl mb-10"></i>
                     <p class="text-[12px] text-amber-400 tracking-[0.6em] font-black uppercase mb-6">Response from Apex</p>
@@ -253,8 +268,7 @@
                 <button onclick="startRitual()" class="w-full py-6 bg-gradient-to-r from-amber-400 to-orange-600 text-white font-black rounded-2xl transition-all shadow-xl text-lg">관점 동기화 의식 시작</button>
             </div>
 
-            <!-- [APP: RITUAL HOLD] -->
-            <div id="app-ritual" class="max-w-2xl w-full text-center hidden fade-in no-print app-section">
+            <div id="app-ritual" class="max-w-2xl w-full text-center hidden fade-in no-print app-section-container">
                 <h2 class="text-4xl font-black mb-10 italic uppercase tracking-tighter text-white">Identity Calibration</h2>
                 <p class="text-slate-100 mb-14 font-medium leading-relaxed max-w-md mx-auto text-xl">
                     이미 모든 것을 이룬 자의 눈으로 세상을 보세요.<br>
@@ -271,8 +285,7 @@
                 </div>
             </div>
 
-            <!-- [APP: SURVEY] -->
-            <div id="app-survey" class="max-w-2xl w-full glass-card p-10 md:p-16 rounded-[3.5rem] hidden fade-in no-print app-section">
+            <div id="app-survey" class="max-w-2xl w-full glass-card p-10 md:p-16 rounded-[3.5rem] hidden fade-in no-print app-section-container">
                 <div class="mb-14">
                     <div class="flex justify-between items-center mb-5">
                         <span id="survey-context" class="text-[12px] text-amber-400 font-black tracking-[0.4em] uppercase">Stage Tuning</span>
@@ -289,22 +302,14 @@
                 <p class="text-center text-[12px] text-slate-400 mt-14 font-black uppercase tracking-[0.5em]">Future Self Resonance Only</p>
             </div>
 
-            <!-- [APP: FINAL REPORT] -->
-            <div id="app-result" class="max-w-7xl w-full glass-card p-10 md:p-20 rounded-[4rem] hidden fade-in app-section">
+            <div id="app-result" class="max-w-7xl w-full glass-card p-10 md:p-20 rounded-[4rem] hidden fade-in app-section-container">
                 <div class="text-center mb-20 no-print">
                     <p class="text-amber-400 text-[14px] tracking-[1em] font-black uppercase mb-6">Diagnostic Identity Report</p>
                     <h2 class="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter italic text-center">Apex BPS Pulse</h2>
                     <div id="persona-badge" class="inline-block px-12 py-5 bg-gradient-to-r from-amber-400 to-orange-600 text-white font-black rounded-3xl text-base uppercase tracking-[0.2em] shadow-2xl"></div>
                 </div>
 
-                <!-- [PRINT HEADER] -->
-                <div class="hidden print:block text-center mb-16 border-b pb-12 border-slate-200">
-                    <h1 class="text-4xl font-black tracking-tight">Apex BPS Report: Future Self Architecture</h1>
-                    <p class="text-slate-600 mt-4 font-mono text-lg font-bold" id="print-date"></p>
-                </div>
-
                 <div class="grid lg:grid-cols-12 gap-16">
-                    <!-- Analysis Left (VAK) -->
                     <div class="lg:col-span-4 space-y-12 no-print">
                         <div>
                             <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-4 mb-10">
@@ -318,16 +323,12 @@
                         </div>
                     </div>
 
-                    <!-- Pyramid Area (New Layout) -->
                     <div class="lg:col-span-8 flex flex-col items-center">
                         <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.4em] mb-14">Apex Identity Architecture</h3>
-                        <div id="pyramid-stack" class="pyramid-container">
-                            <!-- JS로 동적 생성 -->
-                        </div>
+                        <div id="pyramid-stack" class="pyramid-container w-full"></div>
                     </div>
                 </div>
 
-                <!-- Footer & CTA -->
                 <div class="mt-24 pt-20 border-t border-slate-800/50 text-center no-print">
                     <h4 class="text-4xl font-black text-white mb-8 italic tracking-tight uppercase">Architect Your Future</h4>
                     <p class="text-slate-200 mb-14 max-w-2xl mx-auto leading-relaxed text-2xl font-medium">
@@ -346,9 +347,7 @@
                     </div>
                 </div>
             </div>
-
         </section>
-
     </main>
 
     <footer class="py-24 border-t border-slate-900 px-6 text-center no-print">
@@ -357,108 +356,114 @@
             <span class="font-black tracking-widest text-lg uppercase text-white">Apex BPS</span>
         </div>
         <p class="text-[11px] text-slate-400 tracking-[0.6em] font-bold uppercase mb-4">© 2026 Apex BPS System. Crafted for the Chosen Ones.</p>
-        <p class="text-[11px] text-slate-500 italic font-medium">"The future is not something you predict. It is something you tune in to."</p>
     </footer>
 
     <script>
-        /** [1] Supabase Connection Details **/
-        const SUPABASE_URL = 'https://qjphtusvgqqogeelibdt.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_mWwIdUstLYsfFtgpauAnHw__RXBneUI';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        /** [1] Supabase 초기화 및 전역 설정 **/
+        let supabaseClient = null;
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (window.supabase) {
+                    supabaseClient = window.supabase.createClient(
+                        'https://qjphtusvgqqogeelibdt.supabase.co',
+                        'sb_publishable_mWwIdUstLYsfFtgpauAnHw__RXBneUI'
+                    );
+                }
+            } catch (e) {
+                console.error("Supabase 초기화 에러:", e);
+            }
+        });
 
-        /** [2] DATA: 12 Scenarios **/
         const scenarios = [
-            { stage: 1, ctx: "ENERGY", q: "모든 것을 이룬 당신이 맞이하는 아침, 눈을 떴을 때 가장 먼저 느껴지는 결정적 조각은?", opts: [
-                { vak: "V", text: "거울 속에서 뿜어져 나오는 맑고 단단한 나의 눈빛과 아우라" },
-                { vak: "A", text: "내면에서 들려오는 '오늘도 최고의 하루가 시작되었다'는 명료한 소리" },
-                { vak: "K", text: "온몸의 세포가 깨어나며 흐르는 묵직하고 건강한 생명 에너지" }
-            ]},
-            { stage: 1, ctx: "VITALITY", q: "한계를 돌파하는 활동 중, 당신을 가장 고양시키는 지점은?", opts: [
-                { vak: "V", text: "탄탄하게 균형 잡힌 나의 신체 라인과 생동감 넘치는 건강한 피부" },
-                { vak: "A", text: "규칙적이고 힘차게 박동하는 심장 소리와 활기찬 숨소리의 리듬" },
-                { vak: "K", text: "온몸을 관통하는 짜릿한 전율과 어떤 일도 해낼 수 있을 듯한 활력" }
-            ]},
-            { stage: 2, ctx: "FINANCE", q: "경제적 자유를 완벽히 확보한 당신, 자산 현황을 체크할 때의 핵심 감각은?", opts: [
-                { vak: "V", text: "한눈에 들어오는 깔끔한 자산 포트폴리오와 넉넉하게 찍힌 잔고 수치" },
-                { vak: "A", text: "'이제 평생 부족함은 없다'고 스스로에게 선언하는 확신의 목소리" },
-                { vak: "K", text: "어떤 위기에도 흔들리지 않을 거대한 토대를 딛고 서 있는 안도감" }
-            ]},
-            { stage: 2, ctx: "SPACE", q: "당신만을 위해 설계된 완벽한 공간에 들어섰을 때, 가장 먼저 반응하는 곳은?", opts: [
-                { vak: "V", text: "조명과 가구가 완벽한 조화를 이루며 눈앞에 펼쳐진 세련된 인테리어" },
-                { vak: "A", text: "세상의 소음이 완벽히 차단된, 고요하고 평온한 공간 특유의 정적" },
-                { vak: "K", text: "공간을 가득 채운 기분 좋은 온기와 보송한 카펫이 발바닥에 닿는 감촉" }
-            ]},
-            { stage: 3, ctx: "CONNECTION", q: "성공으로 인해 사랑하는 이들이 행복해하는 모습을 봅니다. 최고의 보상은?", opts: [
-                { vak: "V", text: "나 덕분에 더 넓은 세상을 보며 환하게 웃고 있는 소중한 이들의 표정" },
-                { vak: "A", text: "함께 나누는 진심 어린 대화와 '네가 정말 자랑스러워'라고 말하는 목소리" },
-                { vak: "K", text: "서로를 꽉 껴안았을 때 느껴지는 뭉클한 가슴의 떨림과 든든한 연결감" }
-            ]},
-            { stage: 3, ctx: "TEAM", q: "최고의 동료들과 프로젝트를 완수했습니다. 당신을 고무시키는 것은?", opts: [
-                { vak: "V", text: "실력 있는 이들과 머리를 맞대고 최고의 전략을 그려내는 장면" },
-                { vak: "A", text: "서로의 재능을 인정하며 주고받는 뜨거운 피드백과 격려의 대화" },
-                { vak: "K", text: "팀 전체가 하나로 연결되어 폭발적인 시너지를 내고 있다는 소속감" }
-            ]},
-            { stage: 4, ctx: "ESTEEM", q: "많은 이들 앞에서 당신의 성취를 인정받는 순간, 무엇이 당신을 전율하게 하나요?", opts: [
-                { vak: "V", text: "나를 향해 쏟아지는 존경 가득한 시선들과 선명하게 빛나는 성취의 상징" },
-                { vak: "A", text: "나를 연호하는 환호성과 '역시 당신답다'는 최고의 찬사를 듣는 순간" },
-                { vak: "K", text: "단상 위에 섰을 때 발끝부터 머리끝까지 차오르는 단단한 자존감의 무게" }
-            ]},
-            { stage: 4, ctx: "RECORD", q: "당신의 가치가 세상에 증명되었습니다. 당신을 가장 기쁘게 하는 소식은?", opts: [
-                { vak: "V", text: "매체에 실린 나의 성공 스토리와 세상을 바꾼 나의 이름 석 자" },
-                { vak: "A", text: "끊이지 않고 들려오는 업계의 인정과 나를 찾는 수많은 이들의 부름" },
-                { vak: "K", text: "마침내 내가 꿈꾸던 위치에 도달했다는 스스로에 대한 깊은 자부심" }
-            ]},
-            { stage: 4, ctx: "POWER", q: "중요한 일을 기꺼이 해내고 승리를 쟁취할 때, 당신의 실행 원동력은?", opts: [
-                { vak: "V", text: "완성된 결과물의 청사진을 머릿속에 고화질 영상처럼 선명하게 투사한다" },
-                { vak: "A", text: "망설임을 잠재우는 강력한 내면의 카운트다운 소리와 함께 행동을 선포한다" },
-                { vak: "K", text: "몸이 저절로 움직일 정도의 짜릿한 열망과 빠른 추진력을 신체로 체화한다" }
-            ]},
-            { stage: 5, ctx: "LEGACY", q: "훗날 당신이 남길 유산을 떠올릴 때, 가장 뿌듯한 지점은 무엇입니까?", opts: [
-                { vak: "V", text: "나의 이름과 업적이 새겨진 영구적인 상징물이나 기록들을 볼 때" },
-                { vak: "A", text: "시간이 흘러도 나의 이야기가 사람들 사이에서 끊임없이 회자되는 소리" },
-                { vak: "K", text: "내가 남긴 선한 영향력이 누군가의 인생을 바꾼 뜨거운 온기로 흐를 때" }
+            { stage: 5, ctx: "IDENTITY", q: "당신의 정체성이 완성된 최종 상태, 스스로를 정의하는 한마디가 떠오른다면?", opts: [
+                { vak: "V", text: "세상을 밝히는 등대처럼, 선명하고 빛나는 길을 제시하는 선구자" },
+                { vak: "A", text: "사람들의 영혼을 깨우는 깊은 공명과 영감을 주는 울림의 전달자" },
+                { vak: "K", text: "존재 자체로 사랑과 풍요를 체화하여 주변을 치유하는 에너지의 중심" }
             ]},
             { stage: 5, ctx: "MISSION", q: "삶의 소명을 깨닫고 그 길을 걷고 있는 당신, 존재의 가치를 확인하는 방식은?", opts: [
                 { vak: "V", text: "나의 기여로 인해 세상이 조금 더 아름답게 변해가는 광경을 목격한다" },
                 { vak: "A", text: "'드디어 나답게 살고 있다'는 영혼의 깊은 울림과 정적을 만끽한다" },
                 { vak: "K", text: "우주와 하나가 된 듯한 초월적인 평온함과 벅찬 감동을 매 순간 느낀다" }
             ]},
-            { stage: 5, ctx: "APEX", q: "당신의 정체성이 완성된 최종 상태, 스스로를 정의하는 한마디가 떠오른다면?", opts: [
-                { vak: "V", text: "세상을 밝히는 등대처럼, 선명하고 빛나는 길을 제시하는 선구자" },
-                { vak: "A", text: "사람들의 영혼을 깨우는 깊은 공명과 영감을 주는 울림의 전달자" },
-                { vak: "K", text: "존재 자체로 사랑과 풍요를 체화하여 주변을 치유하는 에너지의 중심" }
+            { stage: 5, ctx: "LEGACY", q: "훗날 당신이 남길 유산을 떠올릴 때, 가장 뿌듯한 지점은 무엇입니까?", opts: [
+                { vak: "V", text: "나의 이름과 업적이 새겨진 영구적인 상징물이나 기록들을 볼 때" },
+                { vak: "A", text: "시간이 흘러도 나의 이야기가 사람들 사이에서 끊임없이 회자되는 소리" },
+                { vak: "K", text: "내가 남긴 선한 영향력이 누군가의 인생을 바꾼 뜨거운 온기로 흐를 때" }
+            ]},
+            { stage: 4, ctx: "SUCCESS", q: "중요한 일을 기꺼이 해내고 승리를 쟁취할 때, 당신의 실행 원동력은?", opts: [
+                { vak: "V", text: "완성된 결과물의 청사진을 머릿속에 고화질 영상처럼 선명하게 투사한다" },
+                { vak: "A", text: "망설임을 잠재우는 강력한 내면의 카운트다운 소리와 함께 행동을 선포한다" },
+                { vak: "K", text: "몸이 저절로 움직일 정도의 짜릿한 열망과 빠른 추진력을 신체로 체화한다" }
+            ]},
+            { stage: 4, ctx: "RECORD", q: "당신의 가치가 세상에 증명되었습니다. 당신을 가장 기쁘게 하는 소식은?", opts: [
+                { vak: "V", text: "매체에 실린 나의 성공 스토리와 세상을 바꾼 나의 이름 석 자" },
+                { vak: "A", text: "끊이지 않고 들려오는 업계의 인정과 나를 찾는 수많은 이들의 부름" },
+                { vak: "K", text: "마침내 내가 꿈꾸던 위치에 도달했다는 스스로에 대한 깊은 자부심" }
+            ]},
+            { stage: 4, ctx: "ESTEEM", q: "많은 이들 앞에서 당신의 성취를 인정받는 순간, 무엇이 당신을 전율하게 하나요?", opts: [
+                { vak: "V", text: "나를 향해 쏟아지는 존경 가득한 시선들과 선명하게 빛나는 성취의 상징" },
+                { vak: "A", text: "나를 연호하는 환호성과 '역시 당신답다'는 최고의 찬사를 듣는 순간" },
+                { vak: "K", text: "단상 위에 섰을 때 발끝부터 머리끝까지 차오르는 단단한 자존감의 무게" }
+            ]},
+            { stage: 3, ctx: "TEAM", q: "최고의 동료들과 프로젝트를 완수했습니다. 당신을 고무시키는 것은?", opts: [
+                { vak: "V", text: "실력 있는 이들과 머리를 맞대고 최고의 전략을 그려내는 장면" },
+                { vak: "A", text: "서로의 재능을 인정하며 주고받는 뜨거운 피드백과 격려의 대화" },
+                { vak: "K", text: "팀 전체가 하나로 연결되어 폭발적인 시너지를 내고 있다는 소속감" }
+            ]},
+            { stage: 3, ctx: "CONNECTION", q: "성공으로 인해 사랑하는 이들이 행복해하는 모습을 봅니다. 최고의 보상은?", opts: [
+                { vak: "V", text: "나 덕분에 더 넓은 세상을 보며 환하게 웃고 있는 소중한 이들의 표정" },
+                { vak: "A", text: "함께 나누는 진심 어린 대화와 '네가 정말 자랑스러워'라고 말하는 목소리" },
+                { vak: "K", text: "서로를 꽉 껴안았을 때 느껴지는 뭉클한 가슴의 떨림과 든든한 연결감" }
+            ]},
+            { stage: 2, ctx: "SPACE", q: "당신만을 위해 설계된 완벽한 공간에 들어섰을 때, 가장 먼저 반응하는 곳은?", opts: [
+                { vak: "V", text: "조명과 가구가 완벽한 조화를 이루며 눈앞에 펼쳐진 세련된 인테리어" },
+                { vak: "A", text: "세상의 소음이 완벽히 차단된, 고요하고 평온한 공간 특유의 정적" },
+                { vak: "K", text: "공간을 가득 채운 기분 좋은 온기와 보송한 카펫이 발바닥에 닿는 감촉" }
+            ]},
+            { stage: 2, ctx: "FINANCE", q: "경제적 자유를 완벽히 확보한 당신, 자산 현황을 체크할 때의 핵심 감각은?", opts: [
+                { vak: "V", text: "한눈에 들어오는 깔끔한 자산 포트폴리오와 넉넉하게 찍힌 잔고 수치" },
+                { vak: "A", text: "'이제 평생 부족함은 없다'고 스스로에게 선언하는 확신의 목소리" },
+                { vak: "K", text: "어떤 위기에도 흔들리지 않을 거대한 토대를 딛고 서 있는 안도감" }
+            ]},
+            { stage: 1, ctx: "VITALITY", q: "한계를 돌파하는 활동 중, 당신을 가장 고양시키는 지점은?", opts: [
+                { vak: "V", text: "탄탄하게 균형 잡힌 나의 신체 라인과 생동감 넘치는 건강한 피부" },
+                { vak: "A", text: "규칙적이고 힘차게 박동하는 심장 소리와 활기찬 숨소리의 리듬" },
+                { vak: "K", text: "온몸을 관통하는 짜릿한 전율과 어떤 일도 해낼 수 있을 듯한 활력" }
+            ]},
+            { stage: 1, ctx: "ENERGY", q: "모든 것을 이룬 당신이 맞이하는 아침, 눈을 떴을 때 가장 먼저 느껴지는 결정적 조각은?", opts: [
+                { vak: "V", text: "거울 속에서 뿜어져 나오는 맑고 단단한 나의 눈빛과 아우라" },
+                { vak: "A", text: "내면에서 들려오는 '오늘도 최고의 하루가 시작되었다'는 명료한 소리" },
+                { vak: "K", text: "온몸의 세포가 깨어나며 흐르는 묵직하고 건강한 생명 에너지" }
             ]}
         ];
 
-        const apexMessages = [
-            "이미 다 끝났어. 너는 그저 그곳까지 걸어오기만 하면 돼.",
-            "불안해하지 마. 네가 느끼는 떨림은 사실 환희의 주파수야.",
-            "기억해. 너는 드래프트 월드의 주인공이 아니라 창조자야.",
-            "지금 그 고민은 미래의 우리에겐 웃으며 이야기할 에피소드일 뿐이야.",
-            "네가 가는 길에 실수란 없어. 모든 것이 완성을 위한 퍼즐 조각이야."
-        ];
-
-        /** [3] SYSTEM CONTROL **/
+        /** [UI 제어 로직] **/
         let currentIdx = 0;
         let selections = [];
         const appSections = ['app-input', 'app-syncing', 'app-message', 'app-ritual', 'app-survey', 'app-result'];
 
-        function showSection(id) {
+        window.showSection = function(id) {
             appSections.forEach(s => {
                 const el = document.getElementById(s);
                 if(el) el.classList.add('hidden');
             });
             const target = document.getElementById(id);
             if(target) target.classList.remove('hidden');
-            document.getElementById('section-experience').scrollIntoView({behavior:'smooth'});
-        }
+            
+            const experienceSection = document.getElementById('section-experience');
+            if(experienceSection) {
+                experienceSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
 
         window.processNoise = function() {
             const val = document.getElementById('noise-input').value.trim();
             if(!val) return alert("당신의 노이즈를 입력해 주세요.");
             showSection('app-syncing');
             setTimeout(() => {
-                document.getElementById('apex-message').innerText = `"${apexMessages[Math.floor(Math.random() * apexMessages.length)]}"`;
+                const msgEl = document.getElementById('apex-message');
+                if(msgEl) msgEl.innerText = `"${apexMessages[Math.floor(Math.random() * apexMessages.length)]}"`;
                 showSection('app-message');
             }, 2500);
         }
@@ -471,10 +476,12 @@
 
         const startHold = (e) => {
             if (e.type === 'mousedown' && e.button !== 0) return;
-            e.preventDefault(); holdProgress = 0; trigger.classList.add('holding');
+            e.preventDefault(); 
+            holdProgress = 0; 
+            if(trigger) trigger.classList.add('holding');
             holdTimer = setInterval(() => {
                 holdProgress += 2;
-                syncCircle.style.strokeDashoffset = 722 - (722 * holdProgress / 100);
+                if(syncCircle) syncCircle.style.strokeDashoffset = 722 - (722 * holdProgress / 100);
                 if(holdProgress >= 100) { 
                     clearInterval(holdTimer); 
                     showSection('app-survey'); 
@@ -484,44 +491,56 @@
         };
         const stopHold = () => { 
             clearInterval(holdTimer); 
-            trigger.classList.remove('holding'); 
-            if(holdProgress < 100) { holdProgress = 0; syncCircle.style.strokeDashoffset = 722; }
+            if(trigger) trigger.classList.remove('holding'); 
+            if(holdProgress < 100) { 
+                holdProgress = 0; 
+                if(syncCircle) syncCircle.style.strokeDashoffset = 722; 
+            }
         };
 
-        trigger.addEventListener('mousedown', startHold);
-        trigger.addEventListener('touchstart', startHold);
-        window.addEventListener('mouseup', stopHold);
-        window.addEventListener('touchend', stopHold);
+        if(trigger) {
+            trigger.addEventListener('mousedown', startHold);
+            trigger.addEventListener('touchstart', startHold);
+            window.addEventListener('mouseup', stopHold);
+            window.addEventListener('touchend', stopHold);
+        }
 
         function renderScenario() {
             const data = scenarios[currentIdx];
-            document.getElementById('survey-progress').innerText = `${String(currentIdx+1).padStart(2,'0')} / 12`;
-            document.getElementById('survey-bar').style.width = `${((currentIdx+1)/12)*100}%`;
-            document.getElementById('scenario-question').innerText = data.q;
-            
+            const progressTxt = document.getElementById('survey-progress');
+            const bar = document.getElementById('survey-bar');
+            const qTxt = document.getElementById('scenario-question');
             const container = document.getElementById('option-container');
-            container.innerHTML = '';
-            data.opts.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'scenario-btn';
-                btn.innerHTML = `
-                    <div class="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center text-xs font-black text-amber-400 border-2 border-slate-800 shadow-inner">
-                        ${opt.vak}
-                    </div>
-                    <span class="text-lg text-slate-100 font-bold leading-relaxed">${opt.text}</span>
-                `;
-                btn.onclick = () => {
-                    selections.push({ stage: data.stage, vak: opt.vak, text: opt.text });
-                    if(currentIdx < 11) { currentIdx++; renderScenario(); }
-                    else { finishSurvey(); }
-                };
-                container.appendChild(btn);
-            });
+
+            if(progressTxt) progressTxt.innerText = `${String(currentIdx+1).padStart(2,'0')} / 12`;
+            if(bar) bar.style.width = `${((currentIdx+1)/12)*100}%`;
+            if(qTxt) qTxt.innerText = data.q;
+            
+            if(container) {
+                container.innerHTML = '';
+                data.opts.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'scenario-btn';
+                    btn.innerHTML = `
+                        <div class="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center text-xs font-black text-amber-400 border-2 border-slate-800 shadow-inner">
+                            ${opt.vak}
+                        </div>
+                        <span class="text-lg text-slate-100 font-bold leading-relaxed">${opt.text}</span>
+                    `;
+                    btn.onclick = () => {
+                        selections.push({ stage: data.stage, vak: opt.vak, text: opt.text });
+                        if(currentIdx < 11) { currentIdx++; renderScenario(); }
+                        else { finishSurvey(); }
+                    };
+                    container.appendChild(btn);
+                });
+            }
         }
 
         function finishSurvey() {
             showSection('app-syncing');
-            document.getElementById('sync-text').innerText = "CALIBRATING APEX IDENTITY...";
+            const syncTxt = document.getElementById('sync-text');
+            if(syncTxt) syncTxt.innerText = "CALIBRATING APEX IDENTITY...";
             setTimeout(() => generateReport(), 2500);
         }
 
@@ -532,48 +551,52 @@
             const top = Object.keys(pcts).reduce((a, b) => pcts[a] > pcts[b] ? a : b);
 
             const vakCont = document.getElementById('vak-results');
-            vakCont.innerHTML = '';
-            const labels = { V: 'Visual (시각)', A: 'Auditory (청각)', K: 'Kinesthetic (감각)' };
-            const icons = { V: 'eye', A: 'ear-listen', K: 'heart-pulse' };
-            Object.entries(pcts).forEach(([k, v]) => {
-                vakCont.innerHTML += `
-                    <div>
-                        <div class="flex justify-between items-end mb-4">
-                            <span class="text-[13px] text-slate-200 uppercase tracking-[0.3em] font-black"><i class="fa-solid fa-${icons[k]} text-amber-400 mr-3 text-lg"></i> ${labels[k]}</span>
-                            <span class="text-4xl font-black text-white">${v}%</span>
+            if(vakCont) {
+                vakCont.innerHTML = '';
+                const labels = { V: 'Visual (시각)', A: 'Auditory (청각)', K: 'Kinesthetic (감각)' };
+                const icons = { V: 'eye', A: 'ear-listen', K: 'heart-pulse' };
+                Object.entries(pcts).forEach(([k, v]) => {
+                    vakCont.innerHTML += `
+                        <div>
+                            <div class="flex justify-between items-end mb-4">
+                                <span class="text-[13px] text-slate-200 uppercase tracking-[0.3em] font-black"><i class="fa-solid fa-${icons[k]} text-amber-400 mr-3 text-lg"></i> ${labels[k]}</span>
+                                <span class="text-4xl font-black text-white">${v}%</span>
+                            </div>
+                            <div class="bar-container"><div class="bar-fill" style="width: ${v}%"></div></div>
                         </div>
-                        <div class="bar-container"><div class="bar-fill" style="width: ${v}%"></div></div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
             const pyramidStack = document.getElementById('pyramid-stack');
-            pyramidStack.innerHTML = '';
-            const stageMeta = [
-                { id: 5, title: "Identity: 완성된 정체성", color: "#fcd34d", width: "70px" },
-                { id: 4, title: "Esteem: 성취와 자존감", color: "#fbbf24", width: "95px" },
-                { id: 3, title: "Social: 연결과 가족", color: "#f59e0b", width: "120px" },
-                { id: 2, title: "Safety: 기반과 경제적 자유", color: "#d97706", width: "145px" },
-                { id: 1, title: "Energy: 최상의 신체 상태", color: "#b45309", width: "170px" }
-            ];
+            if(pyramidStack) {
+                pyramidStack.innerHTML = '';
+                const stageMeta = [
+                    { id: 5, title: "Identity: 완성된 정체성", color: "#fcd34d", width: "65px", textDark: true },
+                    { id: 4, title: "Esteem: 성취와 자존감", color: "#fbbf24", width: "85px", textDark: true },
+                    { id: 3, title: "Social: 연결과 가족", color: "#f59e0b", width: "105px", textDark: true },
+                    { id: 2, title: "Safety: 기반과 경제적 자유", color: "#d97706", width: "125px", textDark: false },
+                    { id: 1, title: "Energy: 최상의 신체 상태", color: "#b45309", width: "145px", textDark: false }
+                ];
 
-            stageMeta.forEach(meta => {
-                const stageChoices = selections.filter(s => s.stage === meta.id);
-                const sentence = stageChoices.length > 0 ? stageChoices[stageChoices.length - 1].text : "";
-                
-                const row = document.createElement('div');
-                row.className = 'pyramid-row';
-                row.innerHTML = `
-                    <div class="pyramid-visual-block" style="--block-width: ${meta.width}; --block-bg: ${meta.color};">
-                        LEVEL ${meta.id}
-                    </div>
-                    <div class="pyramid-text-content">
-                        <div class="level-title">${meta.title}</div>
-                        <div class="selected-sentence">"${sentence}"</div>
-                    </div>
-                `;
-                pyramidStack.appendChild(row);
-            });
+                stageMeta.forEach(meta => {
+                    const stageChoices = selections.filter(s => s.stage === meta.id);
+                    const sentence = stageChoices.length > 0 ? stageChoices[stageChoices.length - 1].text : "";
+                    
+                    const row = document.createElement('div');
+                    row.className = 'pyramid-row';
+                    row.innerHTML = `
+                        <div class="pyramid-visual-block" style="--block-width: ${meta.width}; --block-bg: ${meta.color}; color: ${meta.textDark ? '#020617' : '#ffffff'};">
+                            LV ${meta.id}
+                        </div>
+                        <div class="pyramid-text-content">
+                            <div class="level-title">${meta.title}</div>
+                            <div class="selected-sentence">"${sentence}"</div>
+                        </div>
+                    `;
+                    pyramidStack.appendChild(row);
+                });
+            }
 
             const insightMap = {
                 V: "당신의 미래 자아는 '시각적 청사진'을 통해 강력한 신호를 보냅니다. 당신에게 가장 강력한 동기부여는 '보는 것'에서 시작됩니다. 성공한 당신의 모습과 환경을 고해상도로 시각화할 때 실행 엔진이 가장 뜨겁게 가동됩니다.",
@@ -581,10 +604,14 @@
                 K: "당신의 미래 자아는 '물리적 체화'를 통해 묵직한 신호를 보냅니다. 당신은 개념보다 '느낌'이 중요합니다. 성공했을 때 가슴에 퍼지는 안도감이나 신체적 활력을 몸으로 직접 재현해낼 때 폭발적인 추진력이 생깁니다."
             };
 
+            const labels = { V: 'Visual (시각)', A: 'Auditory (청각)', K: 'Kinesthetic (감각)' };
             const persona = `${labels[top].split(' ')[0]} Master (TYPE-${top})`;
-            document.getElementById('persona-badge').innerText = persona;
-            document.getElementById('insight-text').innerText = insightMap[top];
-            document.getElementById('print-date').innerText = new Date().toLocaleDateString();
+            const badge = document.getElementById('persona-badge');
+            if(badge) badge.innerText = persona;
+            const insight = document.getElementById('insight-text');
+            if(insight) insight.innerText = insightMap[top];
+            const date = document.getElementById('print-date');
+            if(date) date.innerText = new Date().toLocaleDateString();
 
             showSection('app-result');
         }
@@ -594,7 +621,6 @@
             window.print();
         };
 
-        /** [4] Supabase Lead Submission **/
         window.submitLead = async () => {
             const email = document.getElementById('user-email').value;
             const btn = document.getElementById('lead-btn');
@@ -606,25 +632,33 @@
             const total = 12;
             const counts = selections.reduce((acc, s) => { acc[s.vak] = (acc[s.vak]||0)+1; return acc; }, {V:0, A:0, K:0});
             
-            const { error } = await supabase
-                .from('user_leads')
-                .insert([{ 
-                    email: email, 
-                    v_score: Math.round(counts.V/total*100), 
-                    a_score: Math.round(counts.A/total*100), 
-                    k_score: Math.round(counts.K/total*100),
-                    persona: document.getElementById('persona-badge').innerText,
-                    choices: selections
-                }]);
+            try {
+                if (supabaseClient) {
+                    const { error } = await supabaseClient
+                        .from('user_leads')
+                        .insert([{ 
+                            email: email, 
+                            v_score: Math.round(counts.V/total*100), 
+                            a_score: Math.round(counts.A/total*100), 
+                            k_score: Math.round(counts.K/total*100),
+                            persona: document.getElementById('persona-badge').innerText,
+                            choices: selections
+                        }]);
 
-            if (error) {
+                    if (error) throw error;
+                    
+                    document.getElementById('success-msg').classList.remove('hidden');
+                    btn.innerText = "신청 완료";
+                } else {
+                    alert("데이터베이스 연결 정보를 확인해주세요.");
+                    btn.innerText = "가이드 받기";
+                    btn.disabled = false;
+                }
+            } catch (error) {
                 console.error(error);
                 alert("데이터 전송 중 오류가 발생했습니다.");
                 btn.innerText = "가이드 받기";
                 btn.disabled = false;
-            } else {
-                document.getElementById('success-msg').classList.remove('hidden');
-                btn.innerText = "신청 완료";
             }
         };
     </script>
