@@ -3,140 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Pulse | 에이펙스 자아 접속</title>
+    <title>Apex BPS | 미래 자아 접속 시스템</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;700&display=swap');
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #020617; color: #f1f5f9; overflow-x: hidden; margin: 0; -webkit-tap-highlight-color: transparent; }
-        .fade-in { animation: fadeIn 1s forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse-circle { width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, rgba(0,0,0,0) 70%); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; user-select: none; -webkit-user-select: none; transition: all 0.3s ease; touch-action: none; }
-        .pulse-inner { width: 120px; height: 120px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 40px #22d3ee; animation: pulse-anim 1.5s infinite cubic-bezier(0.4, 0, 0.6, 1); pointer-events: none; }
-        @keyframes pulse-anim { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 60px #22d3ee; } 100% { transform: scale(0.95); opacity: 0.8; } }
-        .holding .pulse-inner { animation: pulse-fast 0.4s infinite alternate; box-shadow: 0 0 80px #22d3ee; }
-        @keyframes pulse-fast { from { transform: scale(1.0); } to { transform: scale(1.1); } }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+        
+        :root {
+            --bg-main: #050b1a; 
+            --bg-card: rgba(15, 23, 42, 0.9); 
+            --accent-primary: #f59e0b; 
+            --accent-secondary: #d97706; 
+            --text-main: #ffffff; 
+            --text-sub: #e2e8f0; 
+            --text-muted: #cbd5e1; 
+            --nav-height: 80px; /* 네비게이션 높이 정의 */
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            margin: 0;
+            scroll-behavior: smooth;
+        }
+
+        .fade-in { animation: fadeIn 0.8s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 배경 그라데이션 */
+        .hero-gradient {
+            background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.1) 0%, transparent 40%),
+                        var(--bg-main);
+        }
+
+        /* 네비게이션 바 고정 및 겹침 방지 */
+        nav {
+            height: var(--nav-height);
+            background: rgba(5, 11, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* 인터랙티브 동기화 버튼 */
+        .pulse-circle {
+            width: 240px; height: 240px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; cursor: pointer; touch-action: none;
+        }
+        .pulse-inner {
+            width: 110px; height: 110px; border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+            animation: pulse-idle 2.5s infinite ease-in-out;
+        }
+        @keyframes pulse-idle { 0%, 100% { transform: scale(0.92); opacity: 0.7; } 50% { transform: scale(1.08); opacity: 1; } }
+        .holding .pulse-inner { animation: pulse-active 0.4s infinite alternate; box-shadow: 0 0 70px #f59e0b; }
+        @keyframes pulse-active { from { transform: scale(1); } to { transform: scale(1.15); } }
+
         .progress-ring { position: absolute; top: 0; left: 0; transform: rotate(-90deg); pointer-events: none; }
-        textarea::placeholder { color: #475569; }
-        .heart-beat { animation: heartBeat 0.8s infinite; }
-        @keyframes heartBeat { 0% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } 60% { transform: scale(1); } }
+        
+        .scenario-btn {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left; padding: 1.5rem; border-radius: 1.5rem;
+            width: 100%; display: flex; align-items: center; gap: 1.25rem;
+        }
+        .scenario-btn:hover { 
+            background: rgba(245, 158, 11, 0.15); 
+            border-color: var(--accent-primary); 
+            transform: translateY(-4px);
+        }
+
+        /* 결과 피라미드 레이아웃 */
+        .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 12px; }
+        .pyramid-row { display: grid; grid-template-cols: 140px 1fr; align-items: center; gap: 24px; width: 100%; }
+        
+        .pyramid-visual-block {
+            height: 56px;
+            border-radius: 12px;
+            background: var(--block-bg);
+            width: var(--block-width);
+            justify-self: end;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            color: #020617; font-weight: 900; font-size: 11px; letter-spacing: 1px;
+            print-color-adjust: exact;
+        }
+
+        .pyramid-text-content {
+            display: flex; flex-direction: column; justify-content: center;
+            border-left: 2px solid rgba(245, 158, 11, 0.2);
+            padding-left: 20px;
+        }
+        .pyramid-text-content .level-title { font-size: 16px; font-weight: 900; color: #fbbf24; margin-bottom: 4px; }
+        .pyramid-text-content .selected-sentence { font-size: 14px; font-weight: 400; color: #e2e8f0; font-style: italic; line-height: 1.5; }
+
+        .bar-container { height: 12px; background: #1e293b; border-radius: 10px; overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(to right, #f59e0b, #d97706); width: 0%; transition: width 1.5s ease-out; }
+
         .hidden { display: none !important; }
-        .glass-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(34, 211, 238, 0.1); backdrop-filter: blur(12px); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+
+        /* 콘텐츠와 상단바 겹침 방지를 위한 패딩 */
+        .app-section { padding-top: calc(var(--nav-height) + 20px); }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: #0f172a !important; }
+            .glass-card { background: white !important; border: 1px solid #e2e8f0 !important; color: #0f172a !important; box-shadow: none !important; }
+            .pyramid-visual-block { border: 1px solid #94a3b8 !important; }
+            .pyramid-text-content .level-title { color: #b45309 !important; }
+            .pyramid-text-content .selected-sentence { color: #334155 !important; }
+            .min-h-screen { min-height: auto !important; }
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 py-12">
+<body class="hero-gradient">
 
-    <!-- [STEP 1] Landing Section -->
-    <div id="section-landing" class="max-w-2xl w-full text-center fade-in">
-        <h1 class="text-xs tracking-[0.6em] text-cyan-400 mb-8 font-light uppercase">Alpha Zone Connection</h1>
-        <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">당신의 맥박은<br><span class="text-cyan-400">당신의 것이 아닙니다.</span></h2>
-        <p class="text-slate-400 text-lg mb-12 font-light px-4">지금 가슴에 손을 얹고, 미래의 당신(Apex Self)을 수신하세요.<br>버튼을 길게 눌러 동기화를 시작합니다.</p>
-        <div class="flex justify-center mb-8">
-            <div id="hold-trigger" class="pulse-circle">
-                <svg class="progress-ring" width="260" height="260">
-                    <circle id="sync-progress-circle" stroke="#22d3ee" stroke-width="6" fill="transparent" r="127" cx="130" cy="130" stroke-dasharray="798" stroke-dashoffset="798" />
-                </svg>
-                <div class="pulse-inner"></div>
-                <p id="trigger-label" class="absolute text-[10px] font-bold tracking-widest text-slate-900 uppercase">Hold to Sync</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- [STEP 2] Input Noise -->
-    <div id="section-input" class="max-w-md w-full glass-card p-8 rounded-3xl hidden fade-in">
-        <div class="text-center mb-8">
-            <i class="fa-solid fa-tower-broadcast text-cyan-400 text-3xl mb-4"></i>
-            <h2 class="text-2xl font-bold">주파수 채널 개방</h2>
-        </div>
-        <textarea id="noise-input" class="w-full h-40 bg-slate-800/40 border border-slate-700 rounded-2xl p-4 outline-none focus:border-cyan-500 transition-all text-slate-200 resize-none mb-6" placeholder="지금 당신을 힘들게 하는 고민이나 노이즈는 무엇인가요?"></textarea>
-        <button onclick="processSignal()" class="w-full py-4 bg-cyan-500 text-slate-950 font-bold rounded-2xl">시그널 전송</button>
-    </div>
-
-    <!-- [STEP 3] Syncing -->
-    <div id="section-syncing" class="text-center hidden fade-in">
-        <i class="fa-solid fa-heart text-rose-500 text-5xl heart-beat mb-6"></i>
-        <p class="text-cyan-400 font-mono tracking-widest text-sm">SYNCING TO ALPHA ZONE...</p>
-    </div>
-
-    <!-- [STEP 4] Message Display -->
-    <div id="section-message" class="max-w-md w-full text-center hidden fade-in">
-        <h3 id="apex-message" class="text-xl md:text-2xl font-medium leading-relaxed italic text-white mb-10"></h3>
-        <button onclick="showTractionHub()" class="w-full py-4 bg-cyan-500 text-slate-950 font-bold rounded-2xl mb-4">연결 심화하기</button>
-    </div>
-
-    <!-- [STEP 5] Traction Hub -->
-    <div id="section-traction" class="max-w-xl w-full hidden fade-in">
-        <div class="text-center mb-10"><h2 class="text-3xl font-bold">당신의 Pulse를 완성하세요</h2></div>
-        <div class="space-y-6">
-            <div class="glass-card p-6 rounded-3xl">
-                <h3 class="font-bold mb-2">미래 자아 시그널 레터</h3>
-                <div class="flex gap-2">
-                    <input type="email" id="subscriber-email" class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-sm" placeholder="이메일 주소 입력">
-                    <button id="btn-subscribe" onclick="submitEmail()" class="bg-cyan-500 text-slate-950 px-6 py-3 rounded-xl font-bold text-sm">구독</button>
+    <!-- [NAVBAR] -->
+    <nav class="fixed top-0 left-0 w-full z-50 p-4 px-8 no-print flex items-center">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-bolt-lightning text-lg"></i>
                 </div>
-                <p id="subscribe-msg" class="text-[10px] text-cyan-400 mt-2 hidden">구독 신청이 완료되었습니다.</p>
+                <span class="font-black tracking-[0.2em] text-2xl uppercase text-white">Apex BPS</span>
             </div>
-            <div class="glass-card p-6 rounded-3xl">
-                <h3 class="font-bold mb-2">익명의 메시지 전달</h3>
-                <textarea id="feedback-text" class="w-full bg-slate-800/30 border border-slate-700 rounded-xl p-3 text-sm h-24 mb-3" placeholder="의견을 남겨주세요..."></textarea>
-                <button id="btn-feedback" onclick="submitFeedback()" class="w-full py-3 border border-slate-700 text-slate-300 rounded-xl font-bold text-sm">의견 보내기</button>
+            <div class="hidden md:flex gap-10 text-[11px] font-bold uppercase tracking-[0.3em] text-slate-200">
+                <a href="#section-hero" class="hover:text-amber-400 transition">Evolution</a>
+                <a href="#section-features" class="hover:text-amber-400 transition">Logic</a>
+                <a href="#section-experience" class="hover:text-amber-400 transition px-6 py-2 border border-slate-500 rounded-full hover:border-amber-400">Experience</a>
             </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- [MAIN CONTENT] -->
+    <main class="relative z-10">
+        
+        <!-- [LANDING SECTION: HERO] -->
+        <section id="section-hero" class="min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+            <div class="max-w-5xl w-full text-center fade-in">
+                <h2 class="text-[11px] tracking-[0.8em] text-amber-400 mb-8 font-black uppercase">Apex Self Connectivity System</h2>
+                <h1 class="text-6xl md:text-8xl font-black mb-10 leading-[1.1] tracking-tight text-white">
+                    당신의 미래는 어떤<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 italic">주파수로 오는가?</span>
+                </h1>
+                <p class="text-slate-100 text-xl md:text-2xl mb-14 font-medium leading-relaxed max-w-3xl mx-auto">
+                    단순한 계획은 실패합니다. 당신의 뇌가 가장 먼저 반응하는 <br class="hidden md:block">
+                    <span class="text-white font-black italic underline underline-offset-8 decoration-amber-400">‘수신 코드’</span>를 발견할 때만 잠재의식은 움직이기 시작합니다.
+                </p>
+                <div class="flex flex-col md:flex-row gap-6 justify-center">
+                    <button onclick="document.getElementById('section-experience').scrollIntoView({behavior:'smooth'})" class="px-12 py-6 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black rounded-2xl hover:scale-105 transition-all shadow-[0_20px_40px_-10px_rgba(245,158,11,0.5)]">
+                        주파수 동기화 시작 <i class="fa-solid fa-arrow-right ml-3"></i>
+                    </button>
+                    <button onclick="document.getElementById('section-features').scrollIntoView({behavior:'smooth'})" class="px-12 py-6 border-2 border-slate-500 rounded-2xl font-black text-white hover:bg-slate-800 transition-all">
+                        시스템 가이드 보기
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- [LANDING SECTION: FEATURES] -->
+        <section id="section-features" class="py-40 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-24">
+                    <h2 class="text-4xl font-black mb-6 italic uppercase tracking-tight text-white">The Apex BPS Logic</h2>
+                    <p class="text-slate-200 text-lg max-w-2xl mx-auto font-medium">우리는 3단계의 정밀한 해독 과정을 통해 당신의 미래 정체성을 현실과 동기화합니다.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div class="glass-card p-12 rounded-[2.5rem] group hover:border-amber-400 transition-all duration-500">
+                        <div class="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-amber-500 transition-colors duration-500">
+                            <i class="fa-solid fa-tower-observation text-amber-400 group-hover:text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-6 italic tracking-tight text-white uppercase">Purify</h3>
+                        <p class="text-slate-200 text-base leading-relaxed font-normal">현재의 불안과 노이즈를 정화합니다. 비워진 공간에만 미래의 신호가 담길 수 있습니다.</p>
+                    </div>
+                    <div class="glass-card p-12 rounded-[2.5rem] group hover:border-amber-400 transition-all duration-500">
+                        <div class="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-orange-500 transition-colors duration-500">
+                            <i class="fa-solid fa-code-merge text-amber-400 group-hover:text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-6 italic tracking-tight text-white uppercase">Decode</h3>
+                        <p class="text-slate-200 text-base leading-relaxed font-normal">VAK(시각/청각/감각) 수신 타입을 분석합니다. 당신만의 고유한 실행 엔진을 해독합니다.</p>
+                    </div>
+                    <div class="glass-card p-12 rounded-[2.5rem] group hover:border-amber-400 transition-all duration-500">
+                        <div class="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-amber-600 transition-colors duration-500">
+                            <i class="fa-solid fa-cubes text-amber-400 group-hover:text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-6 italic tracking-tight text-white uppercase">Architect</h3>
+                        <p class="text-slate-200 text-base leading-relaxed font-normal">매슬로우 5단계 성공 피라미드를 구축합니다. 당신의 미래를 견고한 구조로 설계합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- [EXPERIENCE AREA] -->
+        <section id="section-experience" class="py-20 px-6 min-h-screen flex items-center justify-center bg-slate-950/30">
+            
+            <!-- [APP: NOISE INPUT] -->
+            <div id="app-input" class="max-w-lg w-full glass-card p-10 md:p-14 rounded-[3rem] fade-in no-print app-section">
+                <div class="text-center mb-12">
+                    <div class="inline-block p-5 rounded-3xl bg-amber-400/10 mb-8">
+                        <i class="fa-solid fa-tower-broadcast text-amber-400 text-4xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-black mb-3 italic uppercase tracking-tight text-white">Noise Purification</h2>
+                    <p class="text-slate-200 text-base font-medium">접속을 방해하는 현재의 소음을 입력하세요.</p>
+                </div>
+                <textarea id="noise-input" class="w-full h-44 bg-slate-950 border-2 border-slate-800 rounded-[2rem] p-7 outline-none focus:border-amber-400 transition-all text-white resize-none mb-8 leading-relaxed text-lg" placeholder="어떤 고민이나 불안이 당신을 머뭇거리게 만드나요?"></textarea>
+                <button onclick="processNoise()" class="w-full py-6 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 font-black rounded-2xl transition-all shadow-xl text-lg hover:brightness-110">신호 전송 및 정화</button>
+            </div>
+
+            <!-- [APP: SYNCING] -->
+            <div id="app-syncing" class="text-center hidden no-print app-section">
+                <div class="relative inline-block mb-12">
+                    <i class="fa-solid fa-circle-nodes text-amber-400 text-8xl animate-pulse"></i>
+                </div>
+                <p class="text-amber-300 font-mono tracking-[0.6em] text-lg uppercase animate-pulse" id="sync-text">Syncing to Alpha Zone...</p>
+            </div>
+
+            <!-- [APP: MESSAGE] -->
+            <div id="app-message" class="max-w-lg w-full text-center hidden fade-in no-print app-section">
+                <div class="mb-14">
+                    <i class="fa-solid fa-sparkles text-yellow-400 text-6xl mb-10"></i>
+                    <p class="text-[12px] text-amber-400 tracking-[0.6em] font-black uppercase mb-6">Response from Apex</p>
+                    <h3 id="apex-message" class="text-3xl md:text-4xl font-bold leading-relaxed italic text-white px-6"></h3>
+                </div>
+                <div class="p-10 glass-card rounded-[2.5rem] mb-10 border-amber-400/30 shadow-2xl">
+                    <p class="text-slate-100 text-lg leading-relaxed font-medium">
+                        미래의 당신은 이미 그 고민을 웃으며 말하고 있습니다. <br><br>
+                        이제 그 미래의 주파수를 지금의 당신에게 <br>
+                        완벽히 고정시키기 위한 <span class="text-amber-400 font-black">Decoding</span>을 시작합니다.
+                    </p>
+                </div>
+                <button onclick="startRitual()" class="w-full py-6 bg-gradient-to-r from-amber-400 to-orange-600 text-white font-black rounded-2xl transition-all shadow-xl text-lg">관점 동기화 의식 시작</button>
+            </div>
+
+            <!-- [APP: RITUAL HOLD] -->
+            <div id="app-ritual" class="max-w-2xl w-full text-center hidden fade-in no-print app-section">
+                <h2 class="text-4xl font-black mb-10 italic uppercase tracking-tighter text-white">Identity Calibration</h2>
+                <p class="text-slate-100 mb-14 font-medium leading-relaxed max-w-md mx-auto text-xl">
+                    이미 모든 것을 이룬 자의 눈으로 세상을 보세요.<br>
+                    <span class="text-amber-400 font-black">당신이 도달할 미래</span>와 하나가 될 때까지 유지하세요.
+                </p>
+                <div class="flex justify-center">
+                    <div id="hold-trigger" class="pulse-circle">
+                        <svg class="progress-ring" width="240" height="240">
+                            <circle id="sync-progress-circle" stroke="#f59e0b" stroke-width="10" fill="transparent" r="115" cx="120" cy="120" stroke-dasharray="722" stroke-dashoffset="722" />
+                        </svg>
+                        <div class="pulse-inner"></div>
+                        <p id="trigger-label" class="absolute text-[12px] font-black tracking-[0.4em] text-slate-950 uppercase">Connect</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [APP: SURVEY] -->
+            <div id="app-survey" class="max-w-2xl w-full glass-card p-10 md:p-16 rounded-[3.5rem] hidden fade-in no-print app-section">
+                <div class="mb-14">
+                    <div class="flex justify-between items-center mb-5">
+                        <span id="survey-context" class="text-[12px] text-amber-400 font-black tracking-[0.4em] uppercase">Stage Tuning</span>
+                        <span id="survey-progress" class="text-[12px] text-slate-200 font-mono font-black tracking-widest">01 / 12</span>
+                    </div>
+                    <div class="bar-container">
+                        <div id="survey-bar" class="bar-fill"></div>
+                    </div>
+                </div>
+                <div class="mb-14 min-h-[160px]">
+                    <h2 id="scenario-question" class="text-3xl md:text-5xl font-black text-white leading-[1.2] tracking-tight"></h2>
+                </div>
+                <div id="option-container" class="space-y-5"></div>
+                <p class="text-center text-[12px] text-slate-400 mt-14 font-black uppercase tracking-[0.5em]">Future Self Resonance Only</p>
+            </div>
+
+            <!-- [APP: FINAL REPORT] -->
+            <div id="app-result" class="max-w-7xl w-full glass-card p-10 md:p-20 rounded-[4rem] hidden fade-in app-section">
+                <div class="text-center mb-20 no-print">
+                    <p class="text-amber-400 text-[14px] tracking-[1em] font-black uppercase mb-6">Diagnostic Identity Report</p>
+                    <h2 class="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter italic">Apex BPS Pulse</h2>
+                    <div id="persona-badge" class="inline-block px-12 py-5 bg-gradient-to-r from-amber-400 to-orange-600 text-white font-black rounded-3xl text-base uppercase tracking-[0.2em] shadow-2xl"></div>
+                </div>
+
+                <!-- [PRINT HEADER] -->
+                <div class="hidden print:block text-center mb-16 border-b pb-12 border-slate-200">
+                    <h1 class="text-4xl font-black tracking-tight">Apex BPS Report: Future Self Architecture</h1>
+                    <p class="text-slate-600 mt-4 font-mono text-lg font-bold" id="print-date"></p>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-16">
+                    <!-- Analysis Left (VAK) -->
+                    <div class="lg:col-span-4 space-y-12 no-print">
+                        <div>
+                            <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-4 mb-10">
+                                <span class="w-2.5 h-6 bg-amber-400"></span> Sensory Core
+                            </h3>
+                            <div id="vak-results" class="space-y-10"></div>
+                        </div>
+                        <div class="p-10 bg-slate-900/80 rounded-[2.5rem] border-2 border-slate-800 shadow-2xl">
+                            <h4 class="text-amber-400 font-black mb-6 text-base italic uppercase tracking-widest">Decoding Guide</h4>
+                            <p id="insight-text" class="text-lg text-slate-100 leading-relaxed font-normal"></p>
+                        </div>
+                    </div>
+
+                    <!-- Pyramid Area -->
+                    <div class="lg:col-span-8 flex flex-col items-center">
+                        <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.4em] mb-14">Apex Identity Architecture</h3>
+                        <div id="pyramid-stack" class="pyramid-container">
+                            <!-- JS로 동적 생성 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer & CTA -->
+                <div class="mt-24 pt-20 border-t border-slate-800/50 text-center no-print">
+                    <h4 class="text-4xl font-black text-white mb-8 italic tracking-tight uppercase">Architect Your Future</h4>
+                    <p class="text-slate-200 mb-14 max-w-2xl mx-auto leading-relaxed text-2xl font-medium">
+                        이 리포트는 시작일 뿐입니다. AI가 당신의 답변을 심층 분석하여 <br>
+                        당신만의 기질과 강점을 결합한 <span class="text-amber-400 font-black">Apex BPS 자아 탐색 가이드북</span>을 설계했습니다.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-5 max-w-2xl mx-auto mb-16">
+                        <input type="email" id="user-email" class="flex-1 bg-slate-950 border-2 border-slate-800 rounded-2xl px-8 py-6 outline-none focus:border-amber-400 transition-all text-xl font-bold text-white placeholder-slate-500" placeholder="리포트를 받을 이메일 주소">
+                        <button onclick="submitLead()" class="bg-white text-slate-950 px-12 py-6 rounded-2xl font-black text-xl transition-all shadow-2xl hover:bg-amber-400 hover:scale-105">가이드 받기</button>
+                    </div>
+                    <p id="success-msg" class="text-amber-400 text-lg font-black hidden animate-pulse mb-10 italic">주파수가 성공적으로 연결되었습니다. 가이드북을 전송합니다.</p>
+
+                    <div class="flex justify-center gap-14">
+                        <button onclick="handlePrint()" class="text-slate-200 text-sm font-black hover:text-amber-400 transition uppercase tracking-[0.4em]"><i class="fa-solid fa-print mr-3 text-lg"></i> Save PDF</button>
+                        <button onclick="location.reload()" class="text-slate-200 text-sm font-black hover:text-amber-400 transition uppercase tracking-[0.4em]"><i class="fa-solid fa-rotate-left mr-3 text-lg"></i> Reset</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="py-24 border-t border-slate-900 px-6 text-center no-print">
+        <div class="mb-10 flex justify-center gap-3 items-center opacity-50">
+            <div class="w-6 h-6 bg-amber-500 rounded-md"></div>
+            <span class="font-black tracking-widest text-lg uppercase text-white">Apex BPS</span>
+        </div>
+        <p class="text-[11px] text-slate-400 tracking-[0.6em] font-bold uppercase mb-4">© 2026 Apex BPS System. Crafted for the Chosen Ones.</p>
+        <p class="text-[11px] text-slate-500 italic font-medium">"The future is not something you predict. It is something you tune in to."</p>
+    </footer>
 
     <script>
-        // --- Supabase 설정 ---
-        // TODO: 본인의 Supabase URL과 Anon Key로 교체하세요.
-        const SUPABASE_URL = 'https://YOUR_PROJECT_URL.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const scenarios = [
+            { stage: 1, ctx: "ENERGY", q: "모든 것을 이룬 당신이 맞이하는 아침, 눈을 떴을 때 가장 먼저 느껴지는 결정적 조각은?", opts: [
+                { vak: "V", text: "거울 속에서 뿜어져 나오는 맑고 단단한 나의 눈빛과 아우라" },
+                { vak: "A", text: "내면에서 들려오는 '오늘도 최고의 하루가 시작되었다'는 명료한 소리" },
+                { vak: "K", text: "온몸의 세포가 깨어나며 흐르는 묵직하고 건강한 생명 에너지" }
+            ]},
+            { stage: 1, ctx: "VITALITY", q: "한계를 돌파하는 활동 중, 당신을 가장 고양시키는 지점은?", opts: [
+                { vak: "V", text: "탄탄하게 균형 잡힌 나의 신체 라인과 생동감 넘치는 건강한 피부" },
+                { vak: "A", text: "규칙적이고 힘차게 박동하는 심장 소리와 활기찬 숨소리의 리듬" },
+                { vak: "K", text: "온몸을 관통하는 짜릿한 전율과 어떤 일도 해낼 수 있을 듯한 활력" }
+            ]},
+            { stage: 2, ctx: "FINANCE", q: "경제적 자유를 완벽히 확보한 당신, 자산 현황을 체크할 때의 핵심 감각은?", opts: [
+                { vak: "V", text: "한눈에 들어오는 깔끔한 자산 포트폴리오와 넉넉하게 찍힌 잔고 수치" },
+                { vak: "A", text: "'이제 평생 부족함은 없다'고 스스로에게 선언하는 확신의 목소리" },
+                { vak: "K", text: "어떤 위기에도 흔들리지 않을 거대한 토대를 딛고 서 있는 안도감" }
+            ]},
+            { stage: 2, ctx: "SPACE", q: "당신만을 위해 설계된 완벽한 공간에 들어섰을 때, 가장 먼저 반응하는 곳은?", opts: [
+                { vak: "V", text: "조명과 가구가 완벽한 조화를 이루며 눈앞에 펼쳐진 세련된 인테리어" },
+                { vak: "A", text: "세상의 소음이 완벽히 차단된, 고요하고 평온한 공간 특유의 정적" },
+                { vak: "K", text: "공간을 가득 채운 기분 좋은 온기와 보송한 카펫이 발바닥에 닿는 감촉" }
+            ]},
+            { stage: 3, ctx: "CONNECTION", q: "성공으로 인해 사랑하는 이들이 행복해하는 모습을 봅니다. 최고의 보상은?", opts: [
+                { vak: "V", text: "나 덕분에 더 넓은 세상을 보며 환하게 웃고 있는 소중한 이들의 표정" },
+                { vak: "A", text: "함께 나누는 진심 어린 대화와 '네가 정말 자랑스러워'라고 말하는 목소리" },
+                { vak: "K", text: "서로를 꽉 껴안았을 때 느껴지는 뭉클한 가슴의 떨림과 든든한 연결감" }
+            ]},
+            { stage: 3, ctx: "TEAM", q: "최고의 동료들과 프로젝트를 완수했습니다. 당신을 고무시키는 것은?", opts: [
+                { vak: "V", text: "실력 있는 이들과 머리를 맞대고 최고의 전략을 그려내는 장면" },
+                { vak: "A", text: "서로의 재능을 인정하며 주고받는 뜨거운 피드백과 격려의 대화" },
+                { vak: "K", text: "팀 전체가 하나로 연결되어 폭발적인 시너지를 내고 있다는 소속감" }
+            ]},
+            { stage: 4, ctx: "ESTEEM", q: "많은 이들 앞에서 당신의 성취를 인정받는 순간, 무엇이 당신을 전율하게 하나요?", opts: [
+                { vak: "V", text: "나를 향해 쏟아지는 존경 가득한 시선들과 선명하게 빛나는 성취의 상징" },
+                { vak: "A", text: "나를 연호하는 환호성과 '역시 당신답다'는 최고의 찬사를 듣는 순간" },
+                { vak: "K", text: "단상 위에 섰을 때 발끝부터 머리끝까지 차오르는 단단한 자존감의 무게" }
+            ]},
+            { stage: 4, ctx: "RECORD", q: "당신의 가치가 세상에 증명되었습니다. 당신을 가장 기쁘게 하는 소식은?", opts: [
+                { vak: "V", text: "매체에 실린 나의 성공 스토리와 세상을 바꾼 나의 이름 석 자" },
+                { vak: "A", text: "끊이지 않고 들려오는 업계의 인정과 나를 찾는 수많은 이들의 부름" },
+                { vak: "K", text: "마침내 내가 꿈꾸던 위치에 도달했다는 스스로에 대한 깊은 자부심" }
+            ]},
+            { stage: 4, ctx: "POWER", q: "중요한 일을 기꺼이 해내고 승리를 쟁취할 때, 당신의 실행 원동력은?", opts: [
+                { vak: "V", text: "완성된 결과물의 청사진을 머릿속에 고화질 영상처럼 선명하게 투사한다" },
+                { vak: "A", text: "망설임을 잠재우는 강력한 내면의 카운트다운 소리와 함께 행동을 선포한다" },
+                { vak: "K", text: "몸이 저절로 움직일 정도의 짜릿한 열망과 빠른 추진력을 신체로 체화한다" }
+            ]},
+            { stage: 5, ctx: "LEGACY", q: "훗날 당신이 남길 유산을 떠올릴 때, 가장 뿌듯한 지점은 무엇입니까?", opts: [
+                { vak: "V", text: "나의 이름과 업적이 새겨진 영구적인 상징물이나 기록들을 볼 때" },
+                { vak: "A", text: "시간이 흘러도 나의 이야기가 사람들 사이에서 끊임없이 회자되는 소리" },
+                { vak: "K", text: "내가 남긴 선한 영향력이 누군가의 인생을 바꾼 뜨거운 온기로 흐를 때" }
+            ]},
+            { stage: 5, ctx: "MISSION", q: "삶의 소명을 깨닫고 그 길을 걷고 있는 당신, 존재의 가치를 확인하는 방식은?", opts: [
+                { vak: "V", text: "나의 기여로 인해 세상이 조금 더 아름답게 변해가는 광경을 목격한다" },
+                { vak: "A", text: "'드디어 나답게 살고 있다'는 영혼의 깊은 울림과 정적을 만끽한다" },
+                { vak: "K", text: "우주와 하나가 된 듯한 초월적인 평온함과 벅찬 감동을 매 순간 느낀다" }
+            ]},
+            { stage: 5, ctx: "APEX", q: "당신의 정체성이 완성된 최종 상태, 스스로를 정의하는 한마디가 떠오른다면?", opts: [
+                { vak: "V", text: "세상을 밝히는 등대처럼, 선명하고 빛나는 길을 제시하는 선구자" },
+                { vak: "A", text: "사람들의 영혼을 깨우는 깊은 공명과 영감을 주는 울림의 전달자" },
+                { vak: "K", text: "존재 자체로 사랑과 풍요를 체화하여 주변을 치유하는 에너지의 중심" }
+            ]}
+        ];
 
-        const apexMessages = ["이미 다 끝났어. 너는 그저 걸어오기만 하면 돼.", "불안해하지 마. 네가 느끼는 떨림은 환희의 주파수야.", "기억해. 너는 드래프트 월드의 주인공이 아니라 창조자야."];
+        const apexMessages = [
+            "이미 다 끝났어. 너는 그저 그곳까지 걸어오기만 하면 돼.",
+            "불안해하지 마. 네가 느끼는 떨림은 사실 환희의 주파수야.",
+            "기억해. 너는 드래프트 월드의 주인공이 아니라 창조자야.",
+            "지금 그 고민은 미래의 우리에겐 웃으며 이야기할 에피소드일 뿐이야.",
+            "네가 가는 길에 실수란 없어. 모든 것이 완성을 위한 퍼즐 조각이야."
+        ];
+
+        let currentIdx = 0;
+        let selections = [];
+        const appSections = ['app-input', 'app-syncing', 'app-message', 'app-ritual', 'app-survey', 'app-result'];
+
+        function showSection(id) {
+            appSections.forEach(s => {
+                const el = document.getElementById(s);
+                if(el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(id);
+            if(target) target.classList.remove('hidden');
+            document.getElementById('section-experience').scrollIntoView({behavior:'smooth'});
+        }
+
+        window.processNoise = function() {
+            const val = document.getElementById('noise-input').value.trim();
+            if(!val) return alert("당신의 노이즈를 입력해 주세요.");
+            showSection('app-syncing');
+            setTimeout(() => {
+                document.getElementById('apex-message').innerText = `"${apexMessages[Math.floor(Math.random() * apexMessages.length)]}"`;
+                showSection('app-message');
+            }, 2500);
+        }
+
+        window.startRitual = () => showSection('app-ritual');
 
         const trigger = document.getElementById('hold-trigger');
-        const progressCircle = document.getElementById('sync-progress-circle');
-        const triggerLabel = document.getElementById('trigger-label');
-        let holdTimer, progress = 0;
-        const totalDash = 798;
+        const syncCircle = document.getElementById('sync-progress-circle');
+        let holdTimer, holdProgress = 0;
 
         const startHold = (e) => {
-            e.preventDefault();
-            progress = 0;
-            triggerLabel.innerText = "SYNCING...";
-            trigger.classList.add('holding');
+            e.preventDefault(); holdProgress = 0; trigger.classList.add('holding');
             holdTimer = setInterval(() => {
-                progress += 2;
-                progressCircle.style.strokeDashoffset = totalDash - (totalDash * progress / 100);
-                if (progress >= 100) { clearInterval(holdTimer); transitionToInput(); }
+                holdProgress += 2;
+                syncCircle.style.strokeDashoffset = 722 - (722 * holdProgress / 100);
+                if(holdProgress >= 100) { 
+                    clearInterval(holdTimer); 
+                    showSection('app-survey'); 
+                    renderScenario(); 
+                }
             }, 30);
         };
-        const stopHold = () => { clearInterval(holdTimer); trigger.classList.remove('holding'); if (progress < 100) { progress = 0; progressCircle.style.strokeDashoffset = totalDash; triggerLabel.innerText = "HOLD TO SYNC"; } };
+        const stopHold = () => { 
+            clearInterval(holdTimer); 
+            trigger.classList.remove('holding'); 
+            if(holdProgress < 100) { holdProgress = 0; syncCircle.style.strokeDashoffset = 722; }
+        };
 
         trigger.addEventListener('mousedown', startHold);
         trigger.addEventListener('touchstart', startHold);
         window.addEventListener('mouseup', stopHold);
         window.addEventListener('touchend', stopHold);
 
-        function transitionToInput() { document.getElementById('section-landing').classList.add('hidden'); document.getElementById('section-input').classList.remove('hidden'); }
-        function processSignal() { if (!document.getElementById('noise-input').value.trim()) return; document.getElementById('section-input').classList.add('hidden'); document.getElementById('section-syncing').classList.remove('hidden'); setTimeout(showFinalMessage, 2000); }
-        function showFinalMessage() { document.getElementById('apex-message').innerText = `"${apexMessages[Math.floor(Math.random() * apexMessages.length)]}"`; document.getElementById('section-syncing').classList.add('hidden'); document.getElementById('section-message').classList.remove('hidden'); }
-        function showTractionHub() { document.getElementById('section-message').classList.add('hidden'); document.getElementById('section-traction').classList.remove('hidden'); }
-
-        async function submitEmail() {
-            const email = document.getElementById('subscriber-email').value.trim();
-            if (!email.includes('@')) return;
-            const { error } = await _supabase.from('subscribers').insert([{ email }]);
-            if (!error) { document.getElementById('subscribe-msg').classList.remove('hidden'); document.getElementById('subscriber-email').value = ''; }
+        function renderScenario() {
+            const data = scenarios[currentIdx];
+            document.getElementById('survey-progress').innerText = `${String(currentIdx+1).padStart(2,'0')} / 12`;
+            document.getElementById('survey-bar').style.width = `${((currentIdx+1)/12)*100}%`;
+            document.getElementById('scenario-question').innerText = data.q;
+            
+            const container = document.getElementById('option-container');
+            container.innerHTML = '';
+            data.opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'scenario-btn';
+                btn.innerHTML = `
+                    <div class="w-14 h-14 rounded-2xl bg-slate-950 flex items-center justify-center text-xs font-black text-amber-400 border-2 border-slate-800 shadow-inner">
+                        ${opt.vak}
+                    </div>
+                    <span class="text-lg text-slate-100 font-bold leading-relaxed">${opt.text}</span>
+                `;
+                btn.onclick = () => {
+                    selections.push({ stage: data.stage, vak: opt.vak, text: opt.text });
+                    if(currentIdx < 11) { currentIdx++; renderScenario(); }
+                    else { finishSurvey(); }
+                };
+                container.appendChild(btn);
+            });
         }
 
-        async function submitFeedback() {
-            const content = document.getElementById('feedback-text').value.trim();
-            if (!content) return;
-            const { error } = await _supabase.from('feedbacks').insert([{ content }]);
-            if (!error) { alert('의견이 전송되었습니다.'); document.getElementById('feedback-text').value = ''; }
+        function finishSurvey() {
+            showSection('app-syncing');
+            document.getElementById('sync-text').innerText = "CALIBRATING APEX IDENTITY...";
+            setTimeout(() => generateReport(), 2500);
         }
+
+        function generateReport() {
+            const total = 12;
+            const counts = selections.reduce((acc, s) => { acc[s.vak] = (acc[s.vak]||0)+1; return acc; }, {V:0, A:0, K:0});
+            const pcts = { V: Math.round(counts.V/total*100), A: Math.round(counts.A/total*100), K: Math.round(counts.K/total*100) };
+            const top = Object.keys(pcts).reduce((a, b) => pcts[a] > pcts[b] ? a : b);
+
+            const vakCont = document.getElementById('vak-results');
+            vakCont.innerHTML = '';
+            const labels = { V: 'Visual (시각)', A: 'Auditory (청각)', K: 'Kinesthetic (감각)' };
+            const icons = { V: 'eye', A: 'ear-listen', K: 'heart-pulse' };
+            Object.entries(pcts).forEach(([k, v]) => {
+                vakCont.innerHTML += `
+                    <div>
+                        <div class="flex justify-between items-end mb-4">
+                            <span class="text-[13px] text-slate-200 uppercase tracking-[0.3em] font-black"><i class="fa-solid fa-${icons[k]} text-amber-400 mr-3 text-lg"></i> ${labels[k]}</span>
+                            <span class="text-4xl font-black text-white">${v}%</span>
+                        </div>
+                        <div class="bar-container"><div class="bar-fill" style="width: ${v}%"></div></div>
+                    </div>
+                `;
+            });
+
+            const pyramidStack = document.getElementById('pyramid-stack');
+            pyramidStack.innerHTML = '';
+            const stageMeta = [
+                { id: 5, title: "Identity: 완성된 정체성", color: "#fcd34d", width: "65px" },
+                { id: 4, title: "Esteem: 성취와 자존감", color: "#fbbf24", width: "85px" },
+                { id: 3, title: "Social: 연결과 가족", color: "#f59e0b", width: "105px" },
+                { id: 2, title: "Safety: 기반과 경제적 자유", color: "#d97706", width: "125px" },
+                { id: 1, title: "Energy: 최상의 신체 상태", color: "#b45309", width: "145px" }
+            ];
+
+            stageMeta.forEach(meta => {
+                const stageChoices = selections.filter(s => s.stage === meta.id);
+                const sentence = stageChoices.length > 0 ? stageChoices[stageChoices.length - 1].text : "";
+                
+                const row = document.createElement('div');
+                row.className = 'pyramid-row';
+                row.innerHTML = `
+                    <div class="pyramid-visual-block" style="--block-width: ${meta.width}; --block-bg: ${meta.color};">
+                        LEVEL ${meta.id}
+                    </div>
+                    <div class="pyramid-text-content">
+                        <div class="level-title">${meta.title}</div>
+                        <div class="selected-sentence">"${sentence}"</div>
+                    </div>
+                `;
+                pyramidStack.appendChild(row);
+            });
+
+            const insightMap = {
+                V: "당신의 미래 자아는 '시각적 청사진'을 통해 강력한 신호를 보냅니다. 당신에게 가장 강력한 동기부여는 '보는 것'에서 시작됩니다. 성공한 당신의 모습과 환경을 고해상도로 시각화할 때 실행 엔진이 가장 뜨겁게 가동됩니다.",
+                A: "당신의 미래 자아는 '언어적 파동'을 통해 정교한 신호를 보냅니다. 당신은 스스로에게 건네는 확언, 타인의 진심 어린 인정에 민감하게 반응합니다. 미래의 소리에 귀 기울일 때 잠재의식이 가장 빠르게 재설계됩니다.",
+                K: "당신의 미래 자아는 '물리적 체화'를 통해 묵직한 신호를 보냅니다. 당신은 개념보다 '느낌'이 중요합니다. 성공했을 때 가슴에 퍼지는 안도감이나 신체적 활력을 몸으로 직접 재현해낼 때 폭발적인 추진력이 생깁니다."
+            };
+
+            document.getElementById('persona-badge').innerText = `${labels[top].split(' ')[0]} Master (TYPE-${top})`;
+            document.getElementById('insight-text').innerText = insightMap[top];
+            document.getElementById('print-date').innerText = new Date().toLocaleDateString();
+
+            showSection('app-result');
+        }
+
+        window.handlePrint = function() {
+            window.focus();
+            window.print();
+        };
+
+        window.submitLead = () => {
+            const email = document.getElementById('user-email').value;
+            if(!email.includes('@')) return alert("유효한 이메일 주소를 입력해 주세요.");
+            document.getElementById('success-msg').classList.remove('hidden');
+        };
     </script>
 </body>
 </html>
