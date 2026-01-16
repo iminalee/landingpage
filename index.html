@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apex BPS | 미래 자아 접속 시스템</title>
     
-    <!-- Tailwind CSS CDN & Config: 별도의 파일 업로드 없이 이 설정만으로 충분합니다 -->
+    <!-- Tailwind CSS CDN & Config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -59,7 +59,7 @@
 
         nav {
             height: var(--nav-height);
-            background: rgba(5, 11, 26, 0.85);
+            background: rgba(5, 11, 26, 0.9);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: fixed; top: 0; left: 0; width: 100%;
@@ -67,6 +67,7 @@
             display: flex; align-items: center;
         }
 
+        /* 섹션별 스크롤 위치 보정 (네비바 겹침 방지) */
         section { scroll-margin-top: var(--nav-height); }
 
         .glass-card {
@@ -107,7 +108,6 @@
             transform: translateY(-4px);
         }
 
-        /* 피라미드 리포트 레이아웃 */
         .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 16px; }
         .pyramid-row { display: grid; grid-template-cols: 150px 1fr; align-items: center; gap: 28px; width: 100%; }
         
@@ -140,7 +140,7 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
 
-        .app-section-container { padding-top: 40px; padding-bottom: 60px; }
+        .app-section-container { padding-top: 60px; padding-bottom: 60px; }
 
         @media print {
             .no-print { display: none !important; }
@@ -167,7 +167,7 @@
             <div class="hidden md:flex gap-10 text-[11px] font-bold uppercase tracking-[0.3em] text-slate-200">
                 <a href="#section-hero" class="hover:text-amber-400 transition">Evolution</a>
                 <a href="#section-features" class="hover:text-amber-400 transition">Logic</a>
-                <a href="#section-experience" class="hover:text-amber-400 transition px-6 py-2 border border-slate-500 rounded-full hover:border-amber-400">Experience</a>
+                <button onclick="showSection('app-input')" class="hover:text-amber-400 transition px-6 py-2 border border-slate-500 rounded-full hover:border-amber-400">Experience</button>
             </div>
         </div>
     </nav>
@@ -231,7 +231,8 @@
         </section>
 
         <!-- [EXPERIENCE AREA] -->
-        <section id="section-experience" class="py-20 px-6 min-h-screen flex items-center justify-center bg-slate-950/30">
+        <!-- 초기에는 hidden 처리하여 빈 공간 방지 -->
+        <section id="section-experience" class="hidden py-20 px-6 min-h-screen flex items-center justify-center bg-slate-950/30">
             
             <div id="app-input" class="max-w-lg w-full glass-card p-10 md:p-14 rounded-[3rem] fade-in no-print app-section-container hidden">
                 <div class="text-center mb-12">
@@ -438,12 +439,21 @@
             ]}
         ];
 
+        const apexMessages = [
+            "이미 다 끝났어. 너는 그저 그곳까지 걸어오기만 하면 돼.",
+            "불안해하지 마. 네가 느끼는 떨림은 사실 환희의 주파수야.",
+            "기억해. 너는 드래프트 월드의 주인공이 아니라 창조자야.",
+            "지금 그 고민은 미래의 우리에겐 웃으며 이야기할 에피소드일 뿐이야.",
+            "네가 가는 길에 실수란 없어. 모든 것이 완성을 위한 퍼즐 조각이야."
+        ];
+
         /** [UI 제어 로직] **/
         let currentIdx = 0;
         let selections = [];
         const appSections = ['app-input', 'app-syncing', 'app-message', 'app-ritual', 'app-survey', 'app-result'];
 
         window.showSection = function(id) {
+            // 섹션 전환 시 화면 초기화 및 이동
             appSections.forEach(s => {
                 const el = document.getElementById(s);
                 if(el) el.classList.add('hidden');
@@ -451,8 +461,10 @@
             const target = document.getElementById(id);
             if(target) target.classList.remove('hidden');
             
+            // Experience 섹션 자체가 숨겨져 있다면 열어줌 (초기 상태)
             const experienceSection = document.getElementById('section-experience');
             if(experienceSection) {
+                experienceSection.classList.remove('hidden');
                 experienceSection.scrollIntoView({ behavior: 'smooth' });
             }
         };
