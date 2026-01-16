@@ -17,6 +17,9 @@
                             400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
                             800: '#92400e', 900: '#78350f', 950: '#451a03',
                         }
+                    },
+                    screens: {
+                        'print': {'raw': 'print'},
                     }
                 }
             }
@@ -153,7 +156,7 @@
             .pyramid-text-content .selected-sentence { font-size: 13px; }
         }
 
-        /* 인쇄(PDF) 최적화 스타일 */
+        /* 인쇄(PDF) 최적화 스타일 - 한 페이지 유지 */
         @media print {
             @page { margin: 10mm; size: A4 portrait; }
             
@@ -173,9 +176,9 @@
             }
 
             /* 결과 리포트 영역만 강제 표시 */
-            body { background: white !important; color: #0f172a !important; font-size: 11pt; }
-            main { display: block !important; }
-            #section-experience { display: block !important; padding: 0 !important; background: transparent !important; }
+            body { background: white !important; color: #0f172a !important; font-size: 10pt; height: 100%; overflow: hidden; }
+            main { display: block !important; height: 100%; }
+            #section-experience { display: block !important; padding: 0 !important; background: transparent !important; height: 100%; }
             #app-result { 
                 display: block !important; 
                 opacity: 1 !important; 
@@ -189,19 +192,21 @@
                 box-shadow: none !important;
                 color: #0f172a !important;
                 page-break-inside: avoid;
+                height: 100%;
             }
 
             /* 인쇄 헤더 추가 */
-            #print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; }
-            #print-header h1 { font-size: 22pt; font-weight: 900; color: #0f172a; margin-bottom: 5px; }
-            #print-header p { font-size: 12pt; color: #64748b; }
+            #print-header { display: block !important; text-align: center; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+            #print-header h1 { font-size: 20pt; font-weight: 900; color: #0f172a; margin-bottom: 5px; }
+            #print-header p { font-size: 11pt; color: #64748b; }
 
             /* 인쇄 푸터 추가 */
-            #print-footer { display: block !important; margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; text-align: center; font-size: 9pt; color: #64748b; }
+            #print-footer { display: block !important; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 10px; text-align: center; font-size: 8pt; color: #64748b; position: fixed; bottom: 0; width: 100%; }
 
-            /* 레이아웃 */
+            /* 레이아웃 - 한 페이지에 맞게 간격 축소 */
             .grid { display: block !important; }
-            .lg\:col-span-4 { margin-bottom: 30px !important; }
+            .lg\:col-span-4 { margin-bottom: 20px !important; }
+            .lg\:col-span-8 { margin-bottom: 0px !important; }
             
             /* 피라미드 블록 색상 강제 출력 */
             .pyramid-visual-block { 
@@ -210,30 +215,39 @@
                 color: #000 !important;
                 text-shadow: none !important;
                 box-shadow: none !important;
-                height: 45px !important; /* 높이 약간 줄임 */
+                height: 35px !important; /* 높이 축소 */
+                font-size: 9pt !important;
             }
-            .pyramid-row { margin-bottom: 10px !important; grid-template-cols: 120px 1fr !important; }
-            .pyramid-text-content .level-title { color: #b45309 !important; text-shadow: none !important; font-size: 13pt !important; margin-bottom: 2px !important; }
-            .pyramid-text-content .selected-sentence { color: #334155 !important; font-weight: 600 !important; font-size: 10pt !important; font-style: normal !important; line-height: 1.4 !important; }
-            .pyramid-text-content { border-left: 3px solid #f59e0b !important; padding-left: 15px !important; }
+            .pyramid-row { margin-bottom: 8px !important; grid-template-cols: 120px 1fr !important; gap: 15px !important; }
+            .pyramid-text-content .level-title { color: #b45309 !important; text-shadow: none !important; font-size: 11pt !important; margin-bottom: 1px !important; }
+            .pyramid-text-content .selected-sentence { color: #334155 !important; font-weight: 600 !important; font-size: 9pt !important; font-style: normal !important; line-height: 1.3 !important; }
+            .pyramid-text-content { border-left: 3px solid #f59e0b !important; padding-left: 10px !important; }
+            .pyramid-container { gap: 8px !important; }
 
             /* VAK 차트 바 색상 강제 출력 */
-            .bar-container { background: #f1f5f9 !important; border: 1px solid #e2e8f0; -webkit-print-color-adjust: exact; print-color-adjust: exact; height: 15px !important; width: 100% !important; flex: 1; margin-left: 10px; }
+            .bar-container { background: #f1f5f9 !important; border: 1px solid #e2e8f0; -webkit-print-color-adjust: exact; print-color-adjust: exact; height: 10px !important; width: 100% !important; flex: 1; margin-left: 10px; }
             .bar-fill { background: #f59e0b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
-            /* VAK 차트 한 줄 배치 */
-            .vak-row { display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 8px !important; }
-            .vak-label { width: 150px !important; font-size: 11pt !important; font-weight: bold !important; color: #0f172a !important; display: flex; align-items: center; }
-            .vak-percent { width: 40px !important; text-align: right !important; font-weight: bold !important; color: #0f172a !important; margin-left: 10px; }
+            /* VAK 차트 한 줄 배치 및 크기 축소 */
+            #vak-results { margin-bottom: 10px !important; }
+            .vak-row { display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 5px !important; }
+            .vak-label { width: 140px !important; font-size: 10pt !important; font-weight: bold !important; color: #0f172a !important; display: flex; align-items: center; margin-bottom: 0 !important; }
+            .vak-percent { width: 40px !important; text-align: right !important; font-weight: bold !important; color: #0f172a !important; margin-left: 10px; font-size: 10pt !important; }
+
+            /* Decoding Guide 텍스트 축소 */
+            #insight-text { font-size: 10pt !important; line-height: 1.4 !important; color: #334155 !important; }
+            .p-10.bg-slate-900\/80 { padding: 10px !important; background: transparent !important; border: none !important; box-shadow: none !important; margin-top: 10px !important; }
+            h4 { font-size: 11pt !important; margin-bottom: 5px !important; color: #b45309 !important; }
 
             /* 텍스트 색상 보정 */
             .text-slate-400, .text-slate-200, .text-slate-100 { color: #475569 !important; }
             .text-amber-400, .text-sky-400 { color: #b45309 !important; }
-            h2, h3, h4 { color: #0f172a !important; }
+            h2, h3 { color: #0f172a !important; font-size: 14pt !important; margin-bottom: 10px !important; }
             
             /* 로고 등 숨김 */
-            #persona-badge { border: 2px solid #000; color: #000 !important; background: #fff !important; box-shadow: none !important; margin-top: 10px; }
-            #insight-text { font-size: 11pt !important; line-height: 1.5 !important; color: #334155 !important; }
+            #persona-badge { border: 2px solid #000; color: #000 !important; background: #fff !important; box-shadow: none !important; margin-top: 5px; padding: 5px 15px !important; font-size: 10pt !important; }
+            .text-center.mb-20 { margin-bottom: 15px !important; }
+            .text-6xl { font-size: 20pt !important; margin-bottom: 5px !important; }
         }
     </style>
 </head>
@@ -386,18 +400,18 @@
                 <p class="text-center text-[12px] text-slate-400 mt-14 font-black uppercase tracking-[0.5em]">Future Self Resonance Only</p>
             </div>
 
+            <!-- [FINAL RESULT SECTION] -->
             <div id="app-result" class="max-w-7xl w-full glass-card p-10 md:p-20 rounded-[4rem] hidden fade-in app-section-container">
-                
-                <!-- 인쇄용 헤더 (웹에서는 숨김) -->
-                <div id="print-header" class="hidden">
-                    <h1>Apex BPS Report</h1>
-                    <p>Future Self Architecture</p>
-                </div>
-
                 <div class="text-center mb-20 no-print">
                     <p class="text-amber-400 text-[14px] tracking-[1em] font-black uppercase mb-6">Diagnostic Identity Report</p>
                     <h2 class="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter italic text-center">Apex BPS Pulse</h2>
                     <div id="persona-badge" class="inline-block px-12 py-5 bg-gradient-to-r from-amber-400 to-orange-600 text-white font-black rounded-3xl text-base uppercase tracking-[0.2em] shadow-2xl"></div>
+                </div>
+
+                <!-- [PRINT HEADER: 인쇄시에만 나타남] -->
+                <div id="print-header" class="hidden">
+                    <h1>Apex BPS Report</h1>
+                    <p>Future Self Architecture</p>
                 </div>
 
                 <div class="grid lg:grid-cols-12 gap-16">
