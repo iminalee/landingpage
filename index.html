@@ -107,9 +107,10 @@
             transform: translateY(-4px);
         }
 
-        /* 피라미드 리포트 레이아웃 (가로형 한줄 배치) */
+        /* 피라미드 리포트 레이아웃 */
         .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 12px; }
         
+        /* [중요] 피라미드 가로 배치 스타일 */
         .pyramid-row { 
             display: flex; 
             align-items: center; 
@@ -486,8 +487,9 @@
     </footer>
 
     <script>
-        /** [1] Supabase 초기화 **/
+        /** [1] Supabase 초기화 및 전역 설정 **/
         let supabaseClient = null;
+        
         window.addEventListener('DOMContentLoaded', () => {
             try {
                 if (window.supabase) {
@@ -496,10 +498,11 @@
                         'sb_publishable_mWwIdUstLYsfFtgpauAnHw__RXBneUI'
                     );
                 }
-            } catch (e) { console.error("Supabase Error:", e); }
+            } catch (e) {
+                console.error("Supabase 초기화 에러:", e);
+            }
         });
 
-        /** [2] 시나리오 데이터 **/
         const scenarios = [
             { stage: 5, ctx: "IDENTITY", q: "당신의 정체성이 완성된 최종 상태, 스스로를 정의하는 한마디가 떠오른다면?", opts: [
                 { vak: "V", text: "세상을 밝히는 등대처럼, 선명하고 빛나는 길을 제시하는 선구자" },
