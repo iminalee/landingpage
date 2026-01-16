@@ -19,7 +19,7 @@
             --text-main: #ffffff; 
             --text-sub: #e2e8f0; 
             --text-muted: #cbd5e1; 
-            --nav-height: 80px; /* 네비게이션 높이 정의 */
+            --nav-height: 80px; 
         }
 
         body {
@@ -34,19 +34,19 @@
         .fade-in { animation: fadeIn 0.8s forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 배경 그라데이션 */
         .hero-gradient {
             background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
                         radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.1) 0%, transparent 40%),
                         var(--bg-main);
         }
 
-        /* 네비게이션 바 고정 및 겹침 방지 */
         nav {
             height: var(--nav-height);
-            background: rgba(5, 11, 26, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(5, 11, 26, 0.85);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: fixed; top: 0; left: 0; w-full; z-50;
+            display: flex; align-items: center; width: 100%;
         }
 
         .glass-card {
@@ -56,15 +56,15 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
-        /* 인터랙티브 동기화 버튼 */
+        /* 인터랙티브 요소 */
         .pulse-circle {
-            width: 240px; height: 240px; border-radius: 50%;
+            width: 220px; height: 220px; border-radius: 50%;
             background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
             display: flex; align-items: center; justify-content: center;
             position: relative; cursor: pointer; touch-action: none;
         }
         .pulse-inner {
-            width: 110px; height: 110px; border-radius: 50%;
+            width: 100px; height: 100px; border-radius: 50%;
             background: linear-gradient(135deg, #fbbf24, #f59e0b);
             box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
             animation: pulse-idle 2.5s infinite ease-in-out;
@@ -88,30 +88,30 @@
             transform: translateY(-4px);
         }
 
-        /* 결과 피라미드 레이아웃 */
-        .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 12px; }
-        .pyramid-row { display: grid; grid-template-cols: 140px 1fr; align-items: center; gap: 24px; width: 100%; }
+        /* 결과 피라미드 레이아웃 (Amber) */
+        .pyramid-container { display: flex; flex-direction: column; width: 100%; gap: 14px; }
+        .pyramid-row { display: grid; grid-template-cols: 150px 1fr; align-items: center; gap: 24px; width: 100%; }
         
         .pyramid-visual-block {
-            height: 56px;
-            border-radius: 12px;
+            height: 60px;
+            border-radius: 14px;
             background: var(--block-bg);
             width: var(--block-width);
             justify-self: end;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
             display: flex; align-items: center; justify-content: center;
-            color: #020617; font-weight: 900; font-size: 11px; letter-spacing: 1px;
+            color: #020617; font-weight: 900; font-size: 12px; letter-spacing: 1.5px;
             print-color-adjust: exact;
         }
 
         .pyramid-text-content {
             display: flex; flex-direction: column; justify-content: center;
-            border-left: 2px solid rgba(245, 158, 11, 0.2);
-            padding-left: 20px;
+            border-left: 3px solid rgba(245, 158, 11, 0.3);
+            padding-left: 24px;
         }
-        .pyramid-text-content .level-title { font-size: 16px; font-weight: 900; color: #fbbf24; margin-bottom: 4px; }
-        .pyramid-text-content .selected-sentence { font-size: 14px; font-weight: 400; color: #e2e8f0; font-style: italic; line-height: 1.5; }
+        .pyramid-text-content .level-title { font-size: 17px; font-weight: 900; color: #fbbf24; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .pyramid-text-content .selected-sentence { font-size: 15px; font-weight: 400; color: #f8fafc; font-style: italic; line-height: 1.6; }
 
         .bar-container { height: 12px; background: #1e293b; border-radius: 10px; overflow: hidden; }
         .bar-fill { height: 100%; background: linear-gradient(to right, #f59e0b, #d97706); width: 0%; transition: width 1.5s ease-out; }
@@ -120,8 +120,8 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
 
-        /* 콘텐츠와 상단바 겹침 방지를 위한 패딩 */
-        .app-section { padding-top: calc(var(--nav-height) + 20px); }
+        /* 겹침 방지 섹션 패딩 */
+        .app-section { padding-top: calc(var(--nav-height) + 40px); padding-bottom: 60px; }
 
         @media print {
             .no-print { display: none !important; }
@@ -137,8 +137,8 @@
 <body class="hero-gradient">
 
     <!-- [NAVBAR] -->
-    <nav class="fixed top-0 left-0 w-full z-50 p-4 px-8 no-print flex items-center">
-        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+    <nav class="no-print">
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center px-8">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg">
                     <i class="fa-solid fa-bolt-lightning text-lg"></i>
@@ -293,7 +293,7 @@
             <div id="app-result" class="max-w-7xl w-full glass-card p-10 md:p-20 rounded-[4rem] hidden fade-in app-section">
                 <div class="text-center mb-20 no-print">
                     <p class="text-amber-400 text-[14px] tracking-[1em] font-black uppercase mb-6">Diagnostic Identity Report</p>
-                    <h2 class="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter italic">Apex BPS Pulse</h2>
+                    <h2 class="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter italic text-center">Apex BPS Pulse</h2>
                     <div id="persona-badge" class="inline-block px-12 py-5 bg-gradient-to-r from-amber-400 to-orange-600 text-white font-black rounded-3xl text-base uppercase tracking-[0.2em] shadow-2xl"></div>
                 </div>
 
@@ -318,7 +318,7 @@
                         </div>
                     </div>
 
-                    <!-- Pyramid Area -->
+                    <!-- Pyramid Area (New Layout) -->
                     <div class="lg:col-span-8 flex flex-col items-center">
                         <h3 class="text-sm font-black text-slate-400 uppercase tracking-[0.4em] mb-14">Apex Identity Architecture</h3>
                         <div id="pyramid-stack" class="pyramid-container">
@@ -336,7 +336,7 @@
                     </p>
                     <div class="flex flex-col sm:flex-row gap-5 max-w-2xl mx-auto mb-16">
                         <input type="email" id="user-email" class="flex-1 bg-slate-950 border-2 border-slate-800 rounded-2xl px-8 py-6 outline-none focus:border-amber-400 transition-all text-xl font-bold text-white placeholder-slate-500" placeholder="리포트를 받을 이메일 주소">
-                        <button onclick="submitLead()" class="bg-white text-slate-950 px-12 py-6 rounded-2xl font-black text-xl transition-all shadow-2xl hover:bg-amber-400 hover:scale-105">가이드 받기</button>
+                        <button onclick="submitLead()" id="lead-btn" class="bg-white text-slate-950 px-12 py-6 rounded-2xl font-black text-xl transition-all shadow-2xl hover:bg-sky-400 hover:scale-105">가이드 받기</button>
                     </div>
                     <p id="success-msg" class="text-amber-400 text-lg font-black hidden animate-pulse mb-10 italic">주파수가 성공적으로 연결되었습니다. 가이드북을 전송합니다.</p>
 
@@ -361,6 +361,12 @@
     </footer>
 
     <script>
+        /** [1] Supabase Connection Details **/
+        const SUPABASE_URL = 'https://qjphtusvgqqogeelibdt.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_mWwIdUstLYsfFtgpauAnHw__RXBneUI';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        /** [2] DATA: 12 Scenarios **/
         const scenarios = [
             { stage: 1, ctx: "ENERGY", q: "모든 것을 이룬 당신이 맞이하는 아침, 눈을 떴을 때 가장 먼저 느껴지는 결정적 조각은?", opts: [
                 { vak: "V", text: "거울 속에서 뿜어져 나오는 맑고 단단한 나의 눈빛과 아우라" },
@@ -432,6 +438,7 @@
             "네가 가는 길에 실수란 없어. 모든 것이 완성을 위한 퍼즐 조각이야."
         ];
 
+        /** [3] SYSTEM CONTROL **/
         let currentIdx = 0;
         let selections = [];
         const appSections = ['app-input', 'app-syncing', 'app-message', 'app-ritual', 'app-survey', 'app-result'];
@@ -463,6 +470,7 @@
         let holdTimer, holdProgress = 0;
 
         const startHold = (e) => {
+            if (e.type === 'mousedown' && e.button !== 0) return;
             e.preventDefault(); holdProgress = 0; trigger.classList.add('holding');
             holdTimer = setInterval(() => {
                 holdProgress += 2;
@@ -542,11 +550,11 @@
             const pyramidStack = document.getElementById('pyramid-stack');
             pyramidStack.innerHTML = '';
             const stageMeta = [
-                { id: 5, title: "Identity: 완성된 정체성", color: "#fcd34d", width: "65px" },
-                { id: 4, title: "Esteem: 성취와 자존감", color: "#fbbf24", width: "85px" },
-                { id: 3, title: "Social: 연결과 가족", color: "#f59e0b", width: "105px" },
-                { id: 2, title: "Safety: 기반과 경제적 자유", color: "#d97706", width: "125px" },
-                { id: 1, title: "Energy: 최상의 신체 상태", color: "#b45309", width: "145px" }
+                { id: 5, title: "Identity: 완성된 정체성", color: "#fcd34d", width: "70px" },
+                { id: 4, title: "Esteem: 성취와 자존감", color: "#fbbf24", width: "95px" },
+                { id: 3, title: "Social: 연결과 가족", color: "#f59e0b", width: "120px" },
+                { id: 2, title: "Safety: 기반과 경제적 자유", color: "#d97706", width: "145px" },
+                { id: 1, title: "Energy: 최상의 신체 상태", color: "#b45309", width: "170px" }
             ];
 
             stageMeta.forEach(meta => {
@@ -573,7 +581,8 @@
                 K: "당신의 미래 자아는 '물리적 체화'를 통해 묵직한 신호를 보냅니다. 당신은 개념보다 '느낌'이 중요합니다. 성공했을 때 가슴에 퍼지는 안도감이나 신체적 활력을 몸으로 직접 재현해낼 때 폭발적인 추진력이 생깁니다."
             };
 
-            document.getElementById('persona-badge').innerText = `${labels[top].split(' ')[0]} Master (TYPE-${top})`;
+            const persona = `${labels[top].split(' ')[0]} Master (TYPE-${top})`;
+            document.getElementById('persona-badge').innerText = persona;
             document.getElementById('insight-text').innerText = insightMap[top];
             document.getElementById('print-date').innerText = new Date().toLocaleDateString();
 
@@ -585,10 +594,38 @@
             window.print();
         };
 
-        window.submitLead = () => {
+        /** [4] Supabase Lead Submission **/
+        window.submitLead = async () => {
             const email = document.getElementById('user-email').value;
+            const btn = document.getElementById('lead-btn');
             if(!email.includes('@')) return alert("유효한 이메일 주소를 입력해 주세요.");
-            document.getElementById('success-msg').classList.remove('hidden');
+            
+            btn.innerText = "전송 중...";
+            btn.disabled = true;
+
+            const total = 12;
+            const counts = selections.reduce((acc, s) => { acc[s.vak] = (acc[s.vak]||0)+1; return acc; }, {V:0, A:0, K:0});
+            
+            const { error } = await supabase
+                .from('user_leads')
+                .insert([{ 
+                    email: email, 
+                    v_score: Math.round(counts.V/total*100), 
+                    a_score: Math.round(counts.A/total*100), 
+                    k_score: Math.round(counts.K/total*100),
+                    persona: document.getElementById('persona-badge').innerText,
+                    choices: selections
+                }]);
+
+            if (error) {
+                console.error(error);
+                alert("데이터 전송 중 오류가 발생했습니다.");
+                btn.innerText = "가이드 받기";
+                btn.disabled = false;
+            } else {
+                document.getElementById('success-msg').classList.remove('hidden');
+                btn.innerText = "신청 완료";
+            }
         };
     </script>
 </body>
