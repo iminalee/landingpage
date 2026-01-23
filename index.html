@@ -6,6 +6,9 @@
     <title>APEX BPS | 최상의 나를 수신하다</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Favicon 설정 (SVG 데이터) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='%2322d3ee' stroke-width='8'/><circle cx='50' cy='50' r='20' fill='%2322d3ee'><animate attributeName='opacity' values='1;0.5;1' dur='1.5s' repeatCount='indefinite'/></circle></svg>">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;700&display=swap');
         
@@ -27,6 +30,47 @@
         .logo-glow { text-shadow: 0 0 20px rgba(34, 211, 238, 0.6); }
         .hidden { display: none !important; }
 
+        /* --- [재생성] 전기 펄스 아이콘 애니메이션 --- */
+        .pulse-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            border-radius: 50%;
+            animation: ring-expand 2s infinite ease-out;
+        }
+
+        .pulse-core {
+            width: 40px;
+            height: 40px;
+            background-color: #22d3ee;
+            border-radius: 50%;
+            box-shadow: 0 0 30px #22d3ee, 0 0 60px rgba(34, 211, 238, 0.4);
+            animation: core-pulse 1.5s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        @keyframes ring-expand {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes core-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 30px #22d3ee; }
+            50% { transform: scale(1.1); opacity: 0.8; box-shadow: 0 0 50px #22d3ee; }
+        }
+
         /* 유리 질감 카드 */
         .glass-card {
             background: rgba(15, 23, 42, 0.6);
@@ -34,10 +78,8 @@
             backdrop-filter: blur(12px);
         }
 
-        /* 텍스트 강조 */
         .highlight-cyan { color: #22d3ee; font-weight: 700; }
         
-        /* 스크롤바 커스텀 */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
@@ -47,26 +89,34 @@
 
     <!-- [SECTION 1] 메인 홈 화면 -->
     <div id="section-home" class="max-w-2xl w-full flex flex-col items-center justify-center p-8 min-h-screen fade-in text-center">
-        <div class="mb-12">
-            <h1 class="text-2xl md:text-3xl font-bold tracking-[0.2em] text-cyan-400 logo-glow">APEX BPS</h1>
-            <p class="text-[10px] text-slate-500 tracking-widest mt-2 uppercase">Bio-Psychological System</p>
+        
+        <!-- [복구됨] 전기 펄스 로고 아이콘 -->
+        <div class="pulse-container" onclick="showExplore()">
+            <div class="pulse-ring" style="animation-delay: 0s"></div>
+            <div class="pulse-ring" style="animation-delay: 0.5s"></div>
+            <div class="pulse-core"></div>
         </div>
 
         <div class="mb-12">
-            <h2 class="text-4xl md:text-6xl font-bold leading-tight mb-8 text-white">
+            <h1 class="text-2xl md:text-3xl font-bold tracking-[0.2em] text-cyan-400 logo-glow">APEX BPS</h1>
+            <p class="text-[10px] text-slate-500 tracking-widest mt-2 uppercase italic font-light">Bio-Psychological System</p>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold leading-tight mb-8 text-white">
                 지금의 당신은<br>
                 <span class="text-cyan-400">지속 가능한 상태</span>입니까?
             </h2>
-            <p class="text-slate-400 text-lg md:text-xl font-light leading-relaxed">
+            <p class="text-slate-400 text-lg font-light leading-relaxed max-w-sm mx-auto">
                 Apex BPS는<br>
                 미래의 내가 현재의 나에게 개입하는<br>
-                기록이자 시스템입니다.
+                역방향 진화 시스템입니다.
             </p>
         </div>
 
         <div class="flex flex-col md:flex-row gap-4 w-full max-w-md mb-16">
             <button onclick="showExplore()" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20">
-                Apex BPS 탐색하기
+                Apex BPS 세계관 탐색
             </button>
             <button onclick="window.open('https://electricbeings.com', '_blank')" class="w-full py-4 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white font-bold rounded-xl transition-all">
                 기록 읽기
@@ -75,17 +125,19 @@
 
         <!-- 구독 폼 -->
         <div class="w-full max-w-md border-t border-slate-800 pt-10">
-            <h3 class="text-sm font-bold text-slate-300 mb-2 flex items-center justify-center gap-2">
-                <i class="fa-regular fa-paper-plane text-cyan-400"></i> APEX BPS 이야기와 소식 받기
+            <h3 class="text-xs font-bold text-slate-400 mb-6 flex items-center justify-center gap-2 uppercase tracking-widest">
+                <i class="fa-solid fa-signal text-cyan-400 animate-pulse"></i> Connect with Future Self
             </h3>
-            <div class="space-y-3 mt-4">
-                <input type="text" id="sub-name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-cyan-500 outline-none transition-all" placeholder="이름 (또는 닉네임)">
-                <input type="email" id="sub-email" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-cyan-500 outline-none transition-all" placeholder="이메일 주소">
-                <button onclick="submitToGoogleForm()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold rounded-xl transition-all text-sm">
-                    구독하기
+            <div class="space-y-3">
+                <input type="text" id="sub-name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-cyan-500 outline-none transition-all text-white" placeholder="이름 (또는 닉네임)">
+                <input type="email" id="sub-email" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-cyan-500 outline-none transition-all text-white" placeholder="이메일 주소">
+                <button onclick="submitToGoogleForm()" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold rounded-xl transition-all text-sm border border-cyan-900/30 mt-2">
+                    시그널 수신 예약하기
                 </button>
             </div>
-            <p id="success-msg" class="text-xs text-cyan-400 mt-4 hidden">등록되었습니다. 곧 소식을 보내드릴게요.</p>
+            <p id="success-msg" class="text-xs text-cyan-400 mt-6 hidden">
+                <i class="fa-solid fa-circle-check mr-2"></i> 시스템 동기화 예약이 완료되었습니다.
+            </p>
         </div>
     </div>
 
@@ -96,71 +148,84 @@
         </button>
 
         <header class="mb-16">
-            <span class="text-cyan-500 text-xs tracking-[0.3em] font-bold uppercase">Our Worldview</span>
-            <h2 class="text-3xl md:text-5xl font-bold text-white mt-4 leading-tight">
-                노력의 방향을 바꾸다:<br>
-                <span class="text-cyan-400">역방향 진화 시스템</span>
+            <span class="text-cyan-500 text-xs tracking-[0.3em] font-bold uppercase border-b border-cyan-500 pb-1">Our Core Worldview</span>
+            <h2 class="text-3xl md:text-5xl font-bold text-white mt-8 leading-tight">
+                노력의 패러다임을 바꾸다:<br>
+                <span class="text-cyan-400">Identity-First System</span>
             </h2>
         </header>
 
         <div class="space-y-12 text-slate-300 leading-relaxed text-lg font-light">
-            <section class="space-y-4">
+            <section class="space-y-6">
                 <h3 class="text-white font-bold text-xl flex items-center gap-3">
                     <span class="w-1 h-6 bg-cyan-500"></span>
-                    목표가 아닌 '사람'이 되는 것
+                    목표가 아닌 '사람'으로의 전환
                 </h3>
                 <p>
-                    대부분의 사람들은 목표를 세우고 그곳을 향해 달려갑니다. 하지만 가장 큰 실패의 원인은 목표 자체가 아니라, <span class="highlight-cyan">그 목표에 어울리지 않는 현재의 정체성</span>에 있습니다. 
+                    우리는 보통 목표를 세우고 그곳을 향해 달려갑니다. 하지만 진짜 변화는 목표에 도달했을 때가 아니라, <span class="highlight-cyan">그 목표를 이룰 수밖에 없는 정체성</span>을 가졌을 때 시작됩니다.
                 </p>
                 <p>
-                    Apex BPS는 목표를 달성하기 위해 애쓰는 것보다, <span class="highlight-cyan">이미 그 목표를 달성한 '사람'으로 변하는 것</span>이 가장 빠르고 효율적이라는 사실에 집중합니다.
+                    Apex BPS는 단순히 목표를 달성하는 법을 가르치지 않습니다. 당신이 목표를 세운 그 '사람' 자체로 변하도록 돕는 <span class="text-white">정체성 장착 시스템</span>입니다.
                 </p>
             </section>
 
-            <section class="glass-card p-8 rounded-3xl space-y-4 border-l-4 border-l-cyan-500">
-                <h3 class="text-white font-bold text-xl">미래 자아의 현재 장착 (Apex Integration)</h3>
-                <p>
-                    우리의 접근은 정반대입니다. 미래로 가는 것이 아니라, <span class="text-white font-medium">이미 모든 것을 이룬 미래의 최상 버전(Apex Self)을 지금 이 순간 나의 물리적 신체로 불러옵니다.</span>
-                </p>
-                <p>
-                    당신은 미래를 향해 고통스럽게 걷는 것이 아니라, 이미 그곳에 도달한 자아의 정체성을 <span class="highlight-cyan">'지금 즉시' 장착하고</span> 수월하게 미래를 향해 미끄러져 내려가게 됩니다.
-                </p>
-            </section>
-
-            <section class="space-y-4">
-                <h3 class="text-white font-bold text-xl flex items-center gap-3">
-                    <span class="w-1 h-6 bg-cyan-500"></span>
-                    인생이라는 게임의 실전 시뮬레이션
-                </h3>
-                <p>
-                    Apex BPS 내에서 당신의 인생은 하나의 정교한 게임이 됩니다. 단순히 열심히 하는 것이 아니라, <span class="text-white font-medium">자신의 신체적 요건과 심리적 상태를 게임의 스탯(Stat)처럼 파악</span>하고 최적의 경로를 설계합니다.
-                </p>
-                <p>
-                    진정한 미래를 고민하고, 당신에게 주어진 고유한 하드웨어(신체)와 소프트웨어(심리)를 활용하여 가장 전략적으로 승리하는 법을 익힙니다.
-                </p>
-            </section>
-
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8">
-                <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-                    <i class="fa-solid fa-microchip text-cyan-400 mb-4 text-2xl"></i>
-                    <h4 class="text-white font-bold mb-2">Science Based</h4>
-                    <p class="text-sm text-slate-500">심리학과 뇌과학을 기반으로 당신의 사고 회로를 재구성합니다.</p>
+            <section class="glass-card p-8 rounded-3xl space-y-6 border-l-4 border-l-cyan-500 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <i class="fa-solid fa-bolt-lightning text-6xl text-cyan-400"></i>
                 </div>
-                <div class="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
+                <h3 class="text-white font-bold text-xl">미래 자아의 현재 개입 (Apex Integration)</h3>
+                <p>
+                    미래를 향해 고통스럽게 걷지 마십시오. Apex BPS는 <span class="text-white font-medium">이미 모든 것을 이룬 미래의 최상 버전(Apex Self)을 지금의 물리적 신체로 수신</span>합니다.
+                </p>
+                <p>
+                    미래 자아의 정체성을 지금 즉시 장착함으로써, 당신은 미래를 향해 '노력'하는 것이 아니라 이미 도달한 자로서 <span class="highlight-cyan">가장 수월한 경로를 따라 자연스럽게 이동</span>하게 됩니다. 이것이 우리의 역방향 접근법입니다.
+                </p>
+            </section>
+
+            <section class="space-y-6">
+                <h3 class="text-white font-bold text-xl flex items-center gap-3">
+                    <span class="w-1 h-6 bg-cyan-500"></span>
+                    인생 시뮬레이션: Identity Game
+                </h3>
+                <p>
+                    인생은 하나의 거대한 시뮬레이션 게임입니다. Apex BPS는 당신의 인생을 게임화하되, 그 본질은 <span class="text-white font-medium">자신의 최적화된 신체적·심리적 조건을 활용하는 전략</span>에 있습니다.
+                </p>
+                <p>
+                    진정한 미래를 고민하고, 당신이라는 하드웨어의 스탯을 정확히 파악하여 게임을 실천해 나가십시오.
+                </p>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
+                <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 hover:border-cyan-500/50 transition-all">
+                    <i class="fa-solid fa-brain text-cyan-400 mb-4 text-2xl"></i>
+                    <h4 class="text-white font-bold text-sm mb-2 uppercase">Neuroscience</h4>
+                    <p class="text-[11px] text-slate-500 leading-normal">뇌과학을 통한 사고 회로 재배선 및 정체성 강화</p>
+                </div>
+                <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 hover:border-purple-500/50 transition-all">
                     <i class="fa-solid fa-dna text-purple-400 mb-4 text-2xl"></i>
-                    <h4 class="text-white font-bold mb-2">Bio-Tech Reality</h4>
-                    <p class="text-sm text-slate-500">생명과학과 바이오테크놀로지를 통해 신체적 한계를 돌파하는 시스템을 지향합니다.</p>
+                    <h4 class="text-white font-bold text-sm mb-2 uppercase">Bio-Technology</h4>
+                    <p class="text-[11px] text-slate-500 leading-normal">신체적 한계를 파악하고 최상의 컨디션을 유지하는 생명과학 기반 시스템</p>
+                </div>
+                <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 hover:border-rose-500/50 transition-all">
+                    <i class="fa-solid fa-gamepad text-rose-400 mb-4 text-2xl"></i>
+                    <h4 class="text-white font-bold text-sm mb-2 uppercase">Gamification</h4>
+                    <p class="text-[11px] text-slate-500 leading-normal">행동 경제학 및 심리학을 적용한 일상 실천의 게임 시뮬레이션</p>
                 </div>
             </section>
         </div>
 
         <div class="mt-24 mb-16 text-center">
-            <button onclick="showHome()" class="w-full max-w-xs py-4 bg-cyan-500 text-slate-950 font-bold rounded-xl hover:scale-105 transition-all">
+            <button onclick="showHome()" class="w-full max-w-xs py-4 bg-cyan-500 text-slate-950 font-bold rounded-xl hover:scale-105 transition-all shadow-xl shadow-cyan-500/30">
                 수신 예약하러 가기
             </button>
-            <p class="mt-4 text-xs text-slate-600">© 2026 APEX BPS. Advanced Human Potential System.</p>
+            <p class="mt-6 text-[10px] text-slate-600 tracking-[0.2em] uppercase">Advanced Human Potential System</p>
         </div>
     </div>
+
+    <!-- [FOOTER] -->
+    <footer class="mt-auto py-10 text-slate-800 text-[10px] font-light tracking-widest">
+        © 2026 APEX BPS. PROTECT YOUR FUTURE SELF.
+    </footer>
 
     <!-- JavaScript 로직 -->
     <script>
@@ -177,7 +242,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 구글 폼 전송 로직 (사용자 ID 적용됨)
+        // 구글 폼 전송 로직
         async function submitToGoogleForm() {
             const name = document.getElementById('sub-name').value.trim();
             const email = document.getElementById('sub-email').value.trim();
@@ -188,15 +253,15 @@
                 return;
             }
 
-            btn.innerText = "전송 중...";
+            btn.innerText = "수신 중...";
             btn.disabled = true;
 
             const FORM_URL = "https://docs.google.com/forms/u/0/d/1AdMsbCVVYKMC0ufpseznesWaD4fzzwCQ9fhyv3w_XZE/formResponse";
             
             const formData = new FormData();
-            formData.append("entry.1251877948", name); // 이름 ID
-            formData.append("emailAddress", email);     // 이메일 ID
-            formData.append("entry.708568656", "동의합니다 (결과 안내 이메일 수신)"); // 수신동의 ID
+            formData.append("entry.1251877948", name); // 이름 필드 ID
+            formData.append("emailAddress", email);     // 이메일 필드 ID
+            formData.append("entry.708568656", "동의합니다 (결과 안내 이메일 수신)"); // 동의 필드 ID
 
             try {
                 await fetch(FORM_URL, {
@@ -208,16 +273,16 @@
                 document.getElementById('success-msg').classList.remove('hidden');
                 document.getElementById('sub-name').value = '';
                 document.getElementById('sub-email').value = '';
-                btn.innerText = "전송 완료";
+                btn.innerText = "수신 완료";
                 
                 setTimeout(() => {
-                    btn.innerText = "구독하기";
+                    btn.innerText = "시그널 수신 예약하기";
                     btn.disabled = false;
                 }, 3000);
             } catch (e) {
-                alert("오류가 발생했습니다. 다시 시도해 주세요.");
+                alert("시스템 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                 btn.disabled = false;
-                btn.innerText = "구독하기";
+                btn.innerText = "시그널 수신 예약하기";
             }
         }
     </script>
