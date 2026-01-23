@@ -11,13 +11,13 @@
         
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #020617; /* slate-950 */
-            color: #f1f5f9; /* slate-100 */
+            background-color: #020617;
+            color: #f1f5f9;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh; /* [수정됨] min-h-screen; -> min-height: 100vh; */
+            min-height: 100vh;
             padding: 2rem;
             text-align: center;
         }
@@ -41,13 +41,13 @@
 </head>
 <body class="selection:bg-cyan-500 selection:text-black">
 
-    <!-- 1. Logo Section -->
+    <!-- 로고 -->
     <div class="mb-12 fade-in">
         <h1 class="text-2xl md:text-3xl font-bold tracking-[0.2em] text-cyan-400 logo-glow">APEX BPS</h1>
         <p class="text-[10px] text-slate-500 tracking-widest mt-2 uppercase">Bio-Psychological System</p>
     </div>
 
-    <!-- 2. Hero Message -->
+    <!-- 메인 메시지 -->
     <div class="mb-12 fade-in" style="animation-delay: 0.3s; opacity: 0;">
         <h2 class="text-4xl md:text-6xl font-bold leading-tight mb-8 text-white">
             지금의 당신은<br>
@@ -60,7 +60,7 @@
         </p>
     </div>
 
-    <!-- 3. Action Buttons -->
+    <!-- 버튼 섹션 -->
     <div class="flex flex-col md:flex-row gap-4 w-full max-w-md mb-16 fade-in" style="animation-delay: 0.6s; opacity: 0;">
         <button onclick="alert('시스템 준비 중입니다. 2달 뒤 공개됩니다.')" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20">
             Apex BPS 탐색하기
@@ -70,7 +70,7 @@
         </button>
     </div>
 
-    <!-- 4. Subscription Form -->
+    <!-- 구독 폼 -->
     <div class="w-full max-w-md border-t border-slate-800 pt-10 fade-in" style="animation-delay: 0.9s; opacity: 0;">
         <h3 class="text-sm font-bold text-slate-300 mb-2 flex items-center justify-center gap-2">
             <i class="fa-regular fa-paper-plane text-cyan-400"></i> APEX BPS 이야기와 소식 받기
@@ -78,9 +78,7 @@
         <p class="text-xs text-slate-500 mb-6">시스템 런칭 알림과 초기 접속 권한을 드립니다.</p>
         
         <div class="space-y-3">
-            <!-- 이름 입력 -->
             <input type="text" id="sub-name" class="input-field w-full px-4 py-3 rounded-xl text-sm text-white" placeholder="이름 (또는 닉네임)">
-            <!-- 이메일 입력 -->
             <input type="email" id="sub-email" class="input-field w-full px-4 py-3 rounded-xl text-sm text-white" placeholder="이메일 주소">
             <button onclick="submitToGoogleForm()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold rounded-xl transition-all text-sm">
                 구독하기
@@ -92,17 +90,18 @@
     </div>
 
     <footer class="mt-20 text-slate-700 text-[10px]">
-        © 2026 MILESTONES.TODAY. All Rights Reserved.
+        © 2026 APEX BPS. All Rights Reserved.
     </footer>
 
-    <!-- Google Forms Logic -->
     <script>
-        // 1. 구글 폼 URL
-        const GOOGLE_FORM_URL = "https://docs.google.com/forms/u/0/d/1AdMsbCVVYKMC0ufpseznesWaD4fzzwCQ9fhyv3w_XZE/formResponse";
+        // 분석된 구글 폼 데이터
+        const REAL_FORM_URL = "https://docs.google.com/forms/u/0/d/1AdMsbCVVYKMC0ufpseznesWaD4fzzwCQ9fhyv3w_XZE/formResponse";
 
-        // 2. ID 설정
-        const ENTRY_ID_NAME = "entry.1251877948"; // '이름' 필드 ID
-        const ENTRY_ID_EMAIL = "emailAddress";    // '이메일' 필드 ID (구글폼 자동수집)
+        // 필드 ID (분석 결과)
+        const ENTRY_ID_NAME = "entry.1251877948"; 
+        const ENTRY_ID_EMAIL = "emailAddress"; 
+        const ENTRY_ID_CONSENT = "entry.708568656"; // 수신 동의 질문 ID
+        const CONSENT_VALUE = "동의합니다 (결과 안내 이메일 수신)"; // 답변 내용 (토씨 하나 틀리면 안 됨)
 
         async function submitToGoogleForm() {
             const name = document.getElementById('sub-name').value.trim();
@@ -114,30 +113,27 @@
                 return;
             }
 
-            // 버튼 로딩 상태
-            const originalText = btn.innerText;
             btn.innerText = "전송 중...";
             btn.disabled = true;
 
             try {
-                // 구글 폼으로 데이터 전송
                 const formData = new FormData();
                 formData.append(ENTRY_ID_NAME, name);
                 formData.append(ENTRY_ID_EMAIL, email);
+                // 필수 항목인 '동의' 데이터를 추가함
+                formData.append(ENTRY_ID_CONSENT, CONSENT_VALUE);
 
-                await fetch(GOOGLE_FORM_URL, {
+                await fetch(REAL_FORM_URL, {
                     method: "POST",
                     mode: "no-cors",
                     body: formData
                 });
 
-                // 성공 UI 처리
                 document.getElementById('success-msg').classList.remove('hidden');
                 document.getElementById('sub-name').value = '';
                 document.getElementById('sub-email').value = '';
                 btn.innerText = "전송 완료";
 
-                // 3초 후 버튼 복귀
                 setTimeout(() => {
                     btn.innerText = "구독하기";
                     btn.disabled = false;
@@ -145,7 +141,7 @@
 
             } catch (e) {
                 console.error("Error:", e);
-                alert("전송 중 오류가 발생했습니다. 다시 시도해주세요.");
+                alert("전송 중 오류가 발생했습니다.");
                 btn.innerText = "구독하기";
                 btn.disabled = false;
             }
